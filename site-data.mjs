@@ -12,11 +12,11 @@ export const brand = {
 };
 
 export const brandAssets = {
-  logo: './assets/logo-badge.svg',
-  logoMark: './assets/logo-mark.svg',
-  favicon: './assets/favicon.svg',
-  trainingFlyer: './assets/training-flyer.svg',
-  servicesFlyer: './assets/services-flyer.svg',
+  logo: './1004134995.png',
+  logoMark: './1004134996.jpg',
+  favicon: './1004134995.png',
+  trainingFlyer: './1004132633(1).jpg',
+  servicesFlyer: './1004134994.jpg',
 };
 
 export const pages = [
