@@ -10,30 +10,39 @@ import {
   contactFaqs,
   contactItems,
   curriculum,
+  footerPages,
   getPageMeta,
+  navPages,
   pages,
   services,
 } from '../site-data.mjs';
 
-test('pages expose the required four-page navigation model', () => {
+test('pages expose the required navigation and footer model', () => {
   assert.deepEqual(
     pages.map((page) => page.slug),
-    ['home', 'services', 'academy', 'contact']
+    ['home', 'about', 'services', 'academy', 'contact', 'privacy', 'terms']
   );
   assert.deepEqual(
-    pages.map((page) => page.title),
+    navPages.map((page) => page.slug),
     [
-      'Beccatee Atelier | Bespoke Fashion & Training Academy Nigeria',
-      'Our Services | Beccatee Atelier',
-      'Apply Now | 12 Weekends Fashion Training — Beccatee Atelier',
-      'Contact | Beccatee Atelier',
+      'home',
+      'about',
+      'services',
+      'academy',
+      'contact',
     ]
+  );
+  assert.deepEqual(
+    footerPages.map((page) => page.slug),
+    ['home', 'about', 'services', 'academy', 'contact', 'privacy', 'terms']
   );
 });
 
 test('getPageMeta falls back to home and resolves supported pages', () => {
   assert.equal(getPageMeta('unknown').slug, 'home');
+  assert.equal(getPageMeta('about').path, './about.html');
   assert.equal(getPageMeta('academy').path, './academy.html');
+  assert.equal(getPageMeta('terms').title, 'Terms & Conditions | Beccatee Atelier');
 });
 
 test('brand contact details use one WhatsApp number everywhere', () => {

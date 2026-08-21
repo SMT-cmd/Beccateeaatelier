@@ -8,10 +8,11 @@ import {
   contactFaqs,
   contactItems,
   curriculum,
+  footerPages,
   getPageMeta,
   homeAbout,
   homeHero,
-  pages,
+  navPages,
   services,
   servicesFlyerMessage,
 } from './site-data.mjs';
@@ -103,7 +104,7 @@ function render() {
           </a>
 
           <nav class="nav-desktop" aria-label="Primary">
-            ${pages.map((page) => navLink(page)).join('')}
+            ${navPages.map((page) => navLink(page)).join('')}
           </nav>
 
           <div class="nav-actions">
@@ -125,7 +126,7 @@ function render() {
         </div>
 
         <div class="container mobile-menu ${state.menuOpen ? 'is-open' : ''}">
-          ${pages.map((page) => navLink(page, true)).join('')}
+          ${navPages.map((page) => navLink(page, true)).join('')}
         </div>
       </header>
 
@@ -148,6 +149,7 @@ function render() {
             <p>Email: <a href="mailto:${brand.email}">${escapeHtml(brand.email)}</a></p>
             <p>Instagram: <a href="${brand.instagramUrl}" target="_blank" rel="noreferrer">${escapeHtml(brand.instagram)}</a></p>
             <p>Location: <a href="${brand.mapsUrl}" target="_blank" rel="noreferrer">${escapeHtml(brand.location)}</a></p>
+            <p>Pages: ${footerPages.map((page) => footerLink(page)).join(' <span aria-hidden="true">|</span> ')}</p>
           </div>
         </div>
       </footer>
@@ -164,12 +166,18 @@ function render() {
 
 function renderPage() {
   switch (state.activePage) {
+    case 'about':
+      return renderAboutPage();
     case 'services':
       return renderServicesPage();
     case 'academy':
       return renderAcademyPage();
     case 'contact':
       return renderContactPage();
+    case 'privacy':
+      return renderPrivacyPage();
+    case 'terms':
+      return renderTermsPage();
     default:
       return renderHomePage();
   }
@@ -242,6 +250,67 @@ function renderHomePage() {
               <p>${escapeHtml(brand.location)}</p>
             </div>
           </div>
+        </section>
+      </div>
+    </section>
+  `;
+}
+
+function renderAboutPage() {
+  const differentiators = [
+    'Bespoke & Training under one roof',
+    '10+ industrial machines',
+    'Weekend academy for working professionals',
+    'Precision fitting and finishing',
+  ];
+
+  return `
+    <section class="page-section">
+      <div class="container">
+        ${pageIntro('About Beccatee Atelier', brand.tagline)}
+
+        <section class="section-block">
+          ${sectionHeading(
+            'Our Story',
+            'Premium Nigerian fashion built on precision, creativity, and craftsmanship.',
+            'Beccatee Atelier is a premium Nigerian fashion house built on precision, creativity, and craftsmanship. With 10+ industrial sewing machines and a dedicated studio at RCCG Redemption Camp, we deliver bespoke tailoring, bridal wear, aso ebi, childrenswear, and structured weekend fashion training.'
+          )}
+        </section>
+
+        <section class="section-block">
+          ${sectionHeading(
+            'What Sets Us Apart',
+            'Why clients and students choose Beccatee Atelier.',
+            'Our atelier combines expert garment production with practical weekend training in one polished studio experience.'
+          )}
+          <div class="card-grid card-grid-services">
+            ${differentiators
+              .map(
+                (item, index) => `
+                  <article class="glass-card service-card reveal" style="--reveal-delay:${(index * 0.08).toFixed(2)}s">
+                    <p class="card-label">Beccatee Atelier</p>
+                    <h3>${escapeHtml(item)}</h3>
+                  </article>
+                `
+              )
+              .join('')}
+          </div>
+        </section>
+
+        <section class="section-block">
+          ${sectionHeading(
+            'Visit The Studio',
+            'Find us at RCCG Redemption Camp.',
+            'We welcome fittings, bookings, and academy inquiries from our studio along the Lagos-Ibadan Expressway.'
+          )}
+          <article class="glass-card reveal" style="--reveal-delay:0.08s">
+            <p class="card-label">Location</p>
+            <p class="detail-value">${escapeHtml(brand.location)}</p>
+            <div class="button-row">
+              <a class="btn btn-gold" href="./services.html" data-page-link>Book a Service</a>
+              <a class="btn btn-whatsapp" href="./academy.html" data-page-link>Join the Academy</a>
+            </div>
+          </article>
         </section>
       </div>
     </section>
@@ -449,6 +518,98 @@ function renderContactPage() {
   `;
 }
 
+function renderPrivacyPage() {
+  return `
+    <section class="page-section">
+      <div class="container">
+        ${pageIntro('Privacy Policy | Beccatee Atelier', 'How we use your inquiry and application details.')}
+
+        <section class="section-block">
+          <article class="glass-card reveal" style="--reveal-delay:0.05s">
+            <p class="eyebrow">Privacy Policy</p>
+            <h2>Contact data is used only to respond to your request.</h2>
+            <p class="section-copy">
+              When you submit the contact or academy form, the information you provide is used only for WhatsApp or email communication related to your inquiry, booking, or enrollment.
+            </p>
+            <p class="section-copy">
+              Beccatee Atelier does not sell, rent, or share your personal information with third parties. We keep your details only for follow-up conversations, service coordination, and academy communication.
+            </p>
+            <p class="section-copy">
+              If you want your details removed from our records, contact us directly using the details below.
+            </p>
+          </article>
+        </section>
+
+        <section class="section-block">
+          <article class="glass-card reveal" style="--reveal-delay:0.12s">
+            <p class="eyebrow">Contact Information</p>
+            <div class="detail-grid">
+              ${contactItems
+                .map(
+                  (item) => `
+                    <div class="detail-item">
+                      <p class="detail-label">${escapeHtml(item.label)}</p>
+                      <p class="detail-value">${escapeHtml(item.value)}</p>
+                    </div>
+                  `
+                )
+                .join('')}
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+  `;
+}
+
+function renderTermsPage() {
+  const terms = [
+    'Service bookings are confirmed after your design details, fitting needs, and production timeline are agreed with Beccatee Atelier.',
+    'Academy enrollment is subject to seat availability and completion of the required registration process.',
+    'Payments for services or academy fees must be made according to the agreed structure shared during booking or enrollment.',
+    'Cancellations or rescheduling requests should be communicated early so we can review available options based on the stage of your booking or training slot.',
+  ];
+
+  return `
+    <section class="page-section">
+      <div class="container">
+        ${pageIntro('Terms & Conditions | Beccatee Atelier', 'Important booking, enrollment, payment, and cancellation terms.')}
+
+        <section class="section-block">
+          <article class="glass-card reveal" style="--reveal-delay:0.05s">
+            <p class="eyebrow">Terms & Conditions</p>
+            <h2>Use of our services and academy spaces is subject to these basic terms.</h2>
+            <ul class="feature-list">
+              ${terms.map((term) => `<li>${escapeHtml(term)}</li>`).join('')}
+            </ul>
+            <p class="section-copy">
+              By booking a service or enrolling in the academy, you agree to communicate accurate information and respond promptly to fitting, payment, and scheduling updates.
+            </p>
+          </article>
+        </section>
+
+        <section class="section-block">
+          <article class="glass-card reveal" style="--reveal-delay:0.12s">
+            <p class="eyebrow">Contact Information</p>
+            <div class="detail-grid">
+              ${contactItems
+                .map(
+                  (item) => `
+                    <div class="detail-item">
+                      <p class="detail-label">${escapeHtml(item.label)}</p>
+                      <p class="detail-value">${escapeHtml(item.value)}</p>
+                    </div>
+                  `
+                )
+                .join('')}
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+  `;
+}
+
 function serviceCard(service, index) {
   return `
     <article class="glass-card service-card reveal" style="--reveal-delay:${(index * 0.08).toFixed(2)}s">
@@ -554,6 +715,10 @@ function navLink(page, mobile = false) {
   const active = page.slug === state.activePage ? 'active' : '';
   const className = mobile ? 'mobile-link' : 'nav-link';
   return `<a class="${className} ${active}" href="${page.path}" data-page-link aria-current="${page.slug === state.activePage ? 'page' : 'false'}">${escapeHtml(page.label)}</a>`;
+}
+
+function footerLink(page) {
+  return `<a href="${page.path}" data-page-link aria-current="${page.slug === state.activePage ? 'page' : 'false'}">${escapeHtml(page.label)}</a>`;
 }
 
 function enhanceUi() {
