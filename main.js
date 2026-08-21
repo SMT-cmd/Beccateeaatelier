@@ -1,177 +1,33 @@
 import {
-  academyTimeline,
-  academyTracks,
-  atelierProcess,
-  atelierServices,
-  buildPaystackInlineConfig,
-  contactChannels,
-  createPaymentReference,
+  aboutSnippet,
+  academyProgram,
+  applicationFields,
+  brand,
+  brandAssets,
+  buildMailtoUrl,
+  buildWhatsAppUrl,
+  contactCards,
+  curriculum,
   faqs,
-  featuredMoments,
   getPageMeta,
-  journalStories,
-  operationsMetrics,
+  heroContent,
   pages,
-  paymentPlans,
-  paymentSteps,
-  serviceCategories,
-  socialProof,
-  testimonials,
-  websiteImage,
+  previewContactItems,
+  serviceHighlights,
+  services,
+  servicesWhatsappMessage,
 } from './site-data.mjs';
-
-const heroCopy = {
-  home: {
-    badge: 'Premium fashion hub',
-    title: 'A premium fashion website built as a real static multi-page experience.',
-    description:
-      'Beccatee Fashion Hub now presents couture services, academy training, editorial storytelling, and guided payments through a polished GitHub Pages-ready website.',
-    primaryLabel: 'Explore services',
-    primaryPage: 'services',
-    secondaryLabel: 'Make a payment',
-    secondaryPage: 'payments',
-    image: websiteImage(
-      'luxury African fashion house interior with couture gowns, glass walls, ambient purple and amber lighting, premium modern website hero image',
-      'portrait_4_3'
-    ),
-  },
-  services: {
-    badge: 'Premium services',
-    title: 'Fashion services packaged with more clarity, trust, and value.',
-    description:
-      'This page helps visitors understand the studio offer quickly, from bridal work to consulting support and premium event dressing.',
-    primaryLabel: 'Start an inquiry',
-    primaryPage: 'contact',
-    secondaryLabel: 'See payments',
-    secondaryPage: 'payments',
-    image: websiteImage(
-      'luxury fashion service presentation in premium studio with bridal gown, eveningwear, and consultation setup, realistic website image',
-      'portrait_4_3'
-    ),
-  },
-  academy: {
-    badge: 'Structured academy',
-    title: 'A practical training experience that looks organized and industry-ready.',
-    description:
-      'The academy page explains learning outcomes, progression, timelines, and next steps so the offer feels serious and premium.',
-    primaryLabel: 'Apply now',
-    primaryPage: 'contact',
-    secondaryLabel: 'Pay seat deposit',
-    secondaryPage: 'payments',
-    image: websiteImage(
-      'fashion design academy workshop in polished luxury studio with students and mentor, realistic editorial education website image',
-      'portrait_4_3'
-    ),
-  },
-  atelier: {
-    badge: 'Couture atelier',
-    title: 'A bespoke atelier page with visible process, pricing anchors, and trust cues.',
-    description:
-      'Clients can see how discovery, fittings, refinement, and delivery work before they book a project.',
-    primaryLabel: 'Book a fitting',
-    primaryPage: 'contact',
-    secondaryLabel: 'Explore services',
-    secondaryPage: 'services',
-    image: websiteImage(
-      'couture fitting in luxury African fashion atelier with designer adjusting bridal dress, premium realistic website image',
-      'portrait_4_3'
-    ),
-  },
-  journal: {
-    badge: 'Editorial journal',
-    title: 'A living brand journal that keeps the website current and credible.',
-    description:
-      'Editorial content gives the studio stronger brand voice, better freshness, and more return-value for visitors.',
-    primaryLabel: 'Book consultation',
-    primaryPage: 'contact',
-    secondaryLabel: 'Explore academy',
-    secondaryPage: 'academy',
-    image: websiteImage(
-      'fashion editorial planning desk with swatches, sketchbook, styling notes and luxe ambient light, realistic premium website image',
-      'portrait_4_3'
-    ),
-  },
-  payments: {
-    badge: 'Guided checkout',
-    title: 'A GitHub Pages-friendly payment page with optional Paystack inline checkout.',
-    description:
-      'Visitors can choose a payment lane, submit details, and either launch Paystack with a public key or use a clear manual follow-up path.',
-    primaryLabel: 'Choose a plan',
-    primaryPage: 'payments',
-    secondaryLabel: 'Contact studio',
-    secondaryPage: 'contact',
-    image: websiteImage(
-      'luxury payment desk in fashion studio with tablet card and elegant packaging, premium glassmorphism modern website image',
-      'portrait_4_3'
-    ),
-  },
-  contact: {
-    badge: 'Client intake',
-    title: 'A complete inquiry page for couture, academy, consulting, and payment follow-up.',
-    description:
-      'Because the site is static-hosted, the contact flow prepares an email or WhatsApp message instead of depending on a backend.',
-    primaryLabel: 'Return home',
-    primaryPage: 'home',
-    secondaryLabel: 'See payments',
-    secondaryPage: 'payments',
-    image: websiteImage(
-      'luxury consultation desk in premium fashion studio with tablet sketchbook fabric and soft ambient light, realistic website image',
-      'portrait_4_3'
-    ),
-  },
-};
-
-const galleryShots = [
-  {
-    title: 'Reception couture',
-    image: websiteImage(
-      'elegant reception dress on mannequin in luxury fashion studio with glassmorphism accents, realistic website portfolio image',
-      'square_hd'
-    ),
-  },
-  {
-    title: 'Studio detailing',
-    image: websiteImage(
-      'close up couture beading and sewing details in premium fashion atelier, realistic luxury website detail shot',
-      'square_hd'
-    ),
-  },
-  {
-    title: 'Fabric curation',
-    image: websiteImage(
-      'bridal fabric curation table in modern couture atelier with lace satin crystals and sketches, realistic premium website image',
-      'square_hd'
-    ),
-  },
-];
-
-const academyBenefits = [
-  'Industry-style weekend structure with mentor critique',
-  'Pattern confidence, finishing discipline, and better presentation quality',
-  'Portfolio-minded assignments and stronger client-readiness',
-];
-
-const journalHighlights = [
-  'Weekly content keeps the brand active and current',
-  'Editorial storytelling creates a better SEO surface',
-  'Voice, authority, and taste feel more believable to premium clients',
-];
 
 const app = document.getElementById('app');
 
 const state = {
   activePage: document.body.dataset.page || 'home',
   menuOpen: false,
-  selectedPlan: paymentPlans[0]?.slug || '',
-  activeMoment: 0,
-  activeTestimonial: 0,
   openFaq: 0,
   contactStatus: null,
-  paymentStatus: null,
-  newsletterStatus: null,
+  applicationStatus: null,
 };
 
-hydratePaymentStatusFromUrl();
 render();
 
 app.addEventListener('click', async (event) => {
@@ -182,32 +38,12 @@ app.addEventListener('click', async (event) => {
     return;
   }
 
-  const planButton = event.target.closest('[data-plan]');
-  if (planButton) {
-    state.selectedPlan = planButton.dataset.plan;
-    render();
-    return;
-  }
-
   const faqButton = event.target.closest('[data-faq]');
   if (faqButton) {
     const faqIndex = Number(faqButton.dataset.faq);
     state.openFaq = state.openFaq === faqIndex ? -1 : faqIndex;
     render();
     return;
-  }
-
-  const momentButton = event.target.closest('[data-moment]');
-  if (momentButton) {
-    state.activeMoment = Number(momentButton.dataset.moment);
-    render();
-    return;
-  }
-
-  const testimonialButton = event.target.closest('[data-testimonial]');
-  if (testimonialButton) {
-    state.activeTestimonial = Number(testimonialButton.dataset.testimonial);
-    render();
   }
 });
 
@@ -223,51 +59,40 @@ app.addEventListener('submit', async (event) => {
     return;
   }
 
-  if (form.matches('[data-newsletter-form]')) {
+  if (form.matches('[data-application-form]')) {
     event.preventDefault();
-    const email = String(new FormData(form).get('email') || '').trim();
-    state.newsletterStatus = email
-      ? `Thanks. ${email} can now be added to your mailing workflow or newsletter provider.`
-      : 'Enter an email address to continue.';
-    render();
-    return;
-  }
-
-  if (form.matches('[data-payment-form]')) {
-    event.preventDefault();
-    await handlePaymentSubmit(form);
+    handleApplicationSubmit(form);
   }
 });
 
 function render() {
   const pageMeta = getPageMeta(state.activePage);
-  const hero = heroCopy[state.activePage] || heroCopy.home;
-  document.title = `${pageMeta.title} | Beccatee Fashion Hub`;
+  document.title = pageMeta.title;
   const metaDescription = document.querySelector('meta[name="description"]');
   if (metaDescription) {
     metaDescription.setAttribute('content', pageMeta.description);
   }
+  setFavicon();
 
   app.innerHTML = `
     <div class="site-shell">
-      <div class="ambient ambient-left"></div>
-      <div class="ambient ambient-right"></div>
-      <div class="ambient ambient-bottom"></div>
-
       <div class="topbar">
         <div class="container topbar-inner">
-          <p>Premium fashion hub with services, academy, and GitHub Pages-ready static hosting.</p>
-          <a class="chip-link" href="${pageUrl('payments')}">Pay securely</a>
+          <p>${escapeHtml(brand.topbarMessage)}</p>
+          <a class="topbar-link" href="https://wa.me/${brand.whatsappNumber}" target="_blank" rel="noreferrer">
+            ${iconWhatsapp()}
+            <span>${escapeHtml(brand.whatsappDisplay)}</span>
+          </a>
         </div>
       </div>
 
       <header class="site-header">
         <div class="container nav-shell">
           <a class="brand" href="${pageUrl('home')}">
-            <span class="brand-mark">BA</span>
+            <img class="brand-mark" src="${brandAssets.logo}" alt="${escapeHtml(brand.name)} logo" />
             <span>
-              <strong>Beccatee</strong>
-              <small>Fashion Hub</small>
+              <strong>${escapeHtml(brand.name)}</strong>
+              <small>${escapeHtml(brand.tagline)}</small>
             </span>
           </a>
 
@@ -276,8 +101,9 @@ function render() {
           </nav>
 
           <div class="nav-actions">
-            <a class="btn btn-ghost nav-cta" href="${pageUrl('contact')}">Contact</a>
-            <a class="btn btn-primary nav-cta" href="${pageUrl('payments')}">Pay now</a>
+            <a class="btn btn-whatsapp nav-cta" href="https://wa.me/${brand.whatsappNumber}" target="_blank" rel="noreferrer">
+              Chat on WhatsApp
+            </a>
             <button class="menu-toggle" type="button" data-menu-toggle aria-label="Toggle menu">
               ${state.menuOpen ? 'Close' : 'Menu'}
             </button>
@@ -295,69 +121,39 @@ function render() {
         }
       </header>
 
-      <main>
-        <section class="hero-section">
-          <div class="container hero-grid">
-            <div class="hero-copy">
-              <p class="eyebrow">${escapeHtml(hero.badge)}</p>
-              <h1>${escapeHtml(hero.title)}</h1>
-              <p class="lead">${escapeHtml(hero.description)}</p>
-
-              <div class="button-row">
-                <a class="btn btn-primary" href="${pageUrl(hero.primaryPage)}">${escapeHtml(hero.primaryLabel)}</a>
-                <a class="btn btn-ghost" href="${pageUrl(hero.secondaryPage)}">${escapeHtml(hero.secondaryLabel)}</a>
-              </div>
-
-              <div class="chip-row">
-                <span class="chip">${escapeHtml(pageMeta.eyebrow)}</span>
-                <span class="chip">Static multi-page site</span>
-                <span class="chip">GitHub Pages ready</span>
-              </div>
-            </div>
-
-            <div class="hero-card card">
-              <img class="hero-image" src="${hero.image}" alt="${escapeHtml(pageMeta.title)}" />
-              <div class="hero-card-grid">
-                <div class="mini-card">
-                  <p class="mini-label">Page focus</p>
-                  <h2>${escapeHtml(pageMeta.title)}</h2>
-                  <p>${escapeHtml(pageMeta.description)}</p>
-                </div>
-                <div class="mini-card accent-card">
-                  <p class="mini-label">Studio quick facts</p>
-                  <ul class="simple-list">
-                    <li>Next academy cohort: September 2026</li>
-                    <li>Consultation turnaround: within 2 hours</li>
-                    <li>Studio base: RCCG Camp, Lagos-Ibadan Expressway</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="page-section">
-          <div class="container">
-            ${renderPageBody()}
-          </div>
-        </section>
+      <main class="page-main">
+        ${renderPageBody()}
       </main>
 
       <footer class="site-footer">
         <div class="container footer-grid">
-          <div>
-            <p class="eyebrow footer-kicker">Beccatee Fashion Hub</p>
-            <p class="footer-copy">
-              Built as a static HTML, CSS, and JavaScript website for direct deployment on GitHub Pages.
-            </p>
+          <div class="footer-brand">
+            <img class="footer-logo" src="${brandAssets.logo}" alt="${escapeHtml(brand.name)} logo" />
+            <div>
+              <p class="footer-title">${escapeHtml(brand.name)}</p>
+              <p class="footer-tagline">${escapeHtml(brand.tagline)}</p>
+            </div>
           </div>
-          <div class="footer-links">
-            ${pages.map((page) => `<a class="footer-pill" href="${pageUrl(page.slug)}">${escapeHtml(page.label)}</a>`).join('')}
-            <a class="footer-pill" href="mailto:beccatee.atelier@gmail.com">Email</a>
-            <a class="footer-pill" href="tel:+2349077456229">Call</a>
+          <div class="footer-details">
+            <p>WhatsApp: <a href="https://wa.me/${brand.whatsappNumber}" target="_blank" rel="noreferrer">${escapeHtml(brand.whatsappDisplay)}</a></p>
+            <p>Instagram: <a href="https://instagram.com/beccatee_atelier" target="_blank" rel="noreferrer">${escapeHtml(brand.instagram)}</a></p>
+            <p>Email: <a href="mailto:${brand.email}">${escapeHtml(brand.email)}</a></p>
+            <p>Location: ${escapeHtml(brand.location)}</p>
+            <p>© 2026 ${escapeHtml(brand.name)}. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
+      <a
+        class="floating-whatsapp"
+        href="https://wa.me/${brand.whatsappNumber}"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Chat with Beccatee Atelier on WhatsApp"
+      >
+        ${iconWhatsapp()}
+        <span>WhatsApp</span>
+      </a>
     </div>
   `;
 }
@@ -368,12 +164,6 @@ function renderPageBody() {
       return renderServicesPage();
     case 'academy':
       return renderAcademyPage();
-    case 'atelier':
-      return renderAtelierPage();
-    case 'journal':
-      return renderJournalPage();
-    case 'payments':
-      return renderPaymentsPage();
     case 'contact':
       return renderContactPage();
     default:
@@ -382,123 +172,98 @@ function renderPageBody() {
 }
 
 function renderHomePage() {
-  const spotlight = featuredMoments[state.activeMoment] || featuredMoments[0];
-  const currentTestimonial = testimonials[state.activeTestimonial] || testimonials[0];
-
   return `
-    <section class="content-grid two-up">
-      <div class="card panel">
-        ${sectionHeading(
-          'Flagship platform',
-          'Now positioned like a premium fashion business with real client pathways.',
-          'The home page balances studio storytelling, business proof, service discovery, and direct conversion routes.'
-        )}
-        <div class="stats-grid compact-top">
-          ${socialProof.map((item) => statCard(item.value, item.label)).join('')}
-        </div>
+    <section class="hero-banner">
+      <img
+        class="hero-flyer"
+        src="${brandAssets.trainingFlyer}"
+        alt="12 Weekends Intermediate Fashion Training flyer"
+      />
+      <a class="hero-cover-link" href="${heroContent.applyHref}" aria-label="${escapeHtml(heroContent.title)}"></a>
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
+        <p class="hero-eyebrow">${escapeHtml(heroContent.eyebrow)}</p>
+        <h1>${escapeHtml(heroContent.title)}</h1>
+        <p class="hero-detail">${escapeHtml(heroContent.detail)}</p>
+        <a class="btn btn-gold hero-cta" href="${heroContent.applyHref}">${escapeHtml(heroContent.ctaLabel)}</a>
       </div>
+      <a class="scroll-indicator" href="#home-about" aria-label="Scroll to more details">
+        <span>Scroll</span>
+        ${iconChevronDown()}
+      </a>
+    </section>
 
-      <div class="card panel floating">
-        <p class="eyebrow">Rotating spotlight</p>
-        <img class="feature-image" src="${spotlight.image}" alt="${escapeHtml(spotlight.title)}" />
-        <p class="mini-label top-gap">${escapeHtml(spotlight.tag)}</p>
-        <h3>${escapeHtml(spotlight.title)}</h3>
-        <p>${escapeHtml(spotlight.description)}</p>
-        <div class="dot-row">
-          ${featuredMoments
-            .map(
-              (item, index) => `
-                <button
-                  type="button"
-                  class="dot-button ${index === state.activeMoment ? 'active' : ''}"
-                  data-moment="${index}"
-                  aria-label="${escapeHtml(item.title)}"
-                ></button>
-              `
-            )
-            .join('')}
-        </div>
+    <section class="ticker-bar" aria-label="${escapeHtml(brand.tagline)}">
+      <div class="ticker-track">
+        ${Array.from({ length: 8 }, () => `<span>${escapeHtml(brand.tagline)}</span>`).join('')}
       </div>
     </section>
 
-    <section class="stack-section">
-      ${sectionHeading(
-        'Operations pulse',
-        'Live-style operational cues make the studio feel active and current.',
-        'These cards help the business feel real, organized, and conversion-ready.'
-      )}
-      <div class="stats-grid">
-        ${operationsMetrics.map((metric) => statCard(metric.value, metric.label, metric.detail)).join('')}
-      </div>
-    </section>
-
-    <section class="cards-grid four-up">
-      ${featureCard(
-        'Services',
-        'Bridal, couture, strategy, and premium service packaging with better conversion logic.',
-        'Explore services',
-        pageUrl('services')
-      )}
-      ${featureCard(
-        'Academy',
-        'Structured learning tracks, mentorship, and visible outcomes for serious students.',
-        'Explore academy',
-        pageUrl('academy')
-      )}
-      ${featureCard(
-        'Payments',
-        'Guided checkout flows for deposits, consultations, and academy seat reservations.',
-        'Open payments',
-        pageUrl('payments')
-      )}
-      ${featureCard(
-        'Journal',
-        'Editorial notes, studio stories, and launch-ready content to keep the brand fresh.',
-        'Read journal',
-        pageUrl('journal')
-      )}
-    </section>
-
-    <section class="content-grid two-up stack-section">
-      <div>
-        ${sectionHeading(
-          'Client proof',
-          'More believable, more premium, and easier to trust.',
-          'The redesign helps services feel organized, high-value, and ready for real clients.'
-        )}
-        <div class="card testimonial-card">
-          <p class="stars">★★★★★</p>
-          <p class="quote">"${escapeHtml(currentTestimonial.quote)}"</p>
-          <p class="quote-author">${escapeHtml(currentTestimonial.name)} · ${escapeHtml(currentTestimonial.role)}</p>
-          <div class="tab-row">
-            ${testimonials
-              .map(
-                (item, index) => `
-                  <button
-                    type="button"
-                    class="tab-button ${index === state.activeTestimonial ? 'active' : ''}"
-                    data-testimonial="${index}"
-                  >
-                    ${escapeHtml(item.name)}
-                  </button>
-                `
-              )
-              .join('')}
+    <section class="page-section">
+      <div class="container">
+        <section class="about-snippet" id="home-about">
+          <img class="about-logo" src="${brandAssets.logo}" alt="${escapeHtml(brand.name)} logo" />
+          <div>
+            <p class="section-kicker">${escapeHtml(aboutSnippet.title)}</p>
+            <p>${escapeHtml(aboutSnippet.body)}</p>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <div class="gallery-grid">
-        ${galleryShots
-          .map(
-            (item) => `
-              <article class="card gallery-card">
-                <img class="gallery-image" src="${item.image}" alt="${escapeHtml(item.title)}" />
-                <p>${escapeHtml(item.title)}</p>
-              </article>
-            `
-          )
-          .join('')}
+        <section class="stack-section">
+          ${sectionHeading(
+            'Services',
+            'Bespoke fashion services for weddings, events, and everyday elegance.',
+            'Explore custom pieces, bridal looks, aso ebi, children wears, and ready-to-wear options from Beccatee Atelier.'
+          )}
+          <a
+            class="flyer-card"
+            href="${buildWhatsAppUrl(servicesWhatsappMessage)}"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              class="flyer-image flyer-services"
+              src="${brandAssets.servicesFlyer}"
+              alt="Beccatee Atelier services flyer"
+            />
+          </a>
+          <div class="cards-grid three-up compact-top">
+            ${serviceHighlights.map((item) => simpleCard(item)).join('')}
+          </div>
+          <div class="section-actions">
+            <a class="btn btn-whatsapp" href="${buildWhatsAppUrl(servicesWhatsappMessage)}" target="_blank" rel="noreferrer">
+              Book a Service on WhatsApp
+            </a>
+          </div>
+        </section>
+
+        <section class="stack-section">
+          ${sectionHeading(
+            'Academy',
+            '12 Weekends Intermediate Fashion Training',
+            academyProgram.preview
+          )}
+          <article class="preview-card">
+            <p>Learn structured garment construction, advanced pattern adaptation, finishing, and presentation in a practical weekend format.</p>
+            <a class="btn btn-gold" href="${pageUrl('academy')}#apply-form">View Full Curriculum & Apply</a>
+          </article>
+        </section>
+
+        <section class="stack-section">
+          ${sectionHeading(
+            'Contact',
+            'Have questions? Chat with us on WhatsApp.',
+            'Reach out for bespoke orders, bridal consultations, ready-to-wear inquiries, and academy applications.'
+          )}
+          <div class="cards-grid contact-preview-grid compact-top">
+            ${previewContactItems.map((item) => `<article class="info-card"><p>${escapeHtml(item)}</p></article>`).join('')}
+          </div>
+          <div class="section-actions">
+            <a class="btn btn-whatsapp" href="https://wa.me/${brand.whatsappNumber}" target="_blank" rel="noreferrer">
+              Chat on WhatsApp
+            </a>
+          </div>
+        </section>
       </div>
     </section>
   `;
@@ -506,67 +271,26 @@ function renderHomePage() {
 
 function renderServicesPage() {
   return `
-    <section class="cards-grid three-up">
-      ${serviceCategories
-        .map(
-          (service) => `
-            <article class="card panel">
-              <span class="tag">${escapeHtml(service.highlight)}</span>
-              <h3>${escapeHtml(service.title)}</h3>
-              <p>${escapeHtml(service.summary)}</p>
-              <ul class="feature-list">
-                ${service.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}
-              </ul>
-            </article>
-          `
-        )
-        .join('')}
-    </section>
-
-    <section class="content-grid two-up stack-section">
-      <div class="card panel">
-        ${sectionHeading(
-          'Why this works',
-          'Clear service packaging lifts trust and conversion quality.',
-          'Premium clients buy clarity, and this page explains what each service lane is for.'
-        )}
-        <div class="stack-list compact-top">
-          ${operationsMetrics
-            .slice(0, 3)
+    <section class="page-section">
+      <div class="container">
+        ${pageIntro('Our Services', 'Bridal, aso ebi, bespoke, and ready-to-wear fashion by Beccatee Atelier.')}
+        <div class="services-hero">
+          <img class="flyer-image flyer-full" src="${brandAssets.servicesFlyer}" alt="Beccatee Atelier services flyer" />
+        </div>
+        <div class="cards-grid three-up stack-section">
+          ${services
             .map(
-              (item) => `
-                <article class="mini-card outline-card">
-                  <div class="row-split">
-                    <strong>${escapeHtml(item.label)}</strong>
-                    <span>${escapeHtml(item.value)}</span>
-                  </div>
-                  <p>${escapeHtml(item.detail)}</p>
+              (service) => `
+                <article class="service-card">
+                  <h3>${escapeHtml(service.title)}</h3>
+                  <p>${escapeHtml(service.description)}</p>
+                  <a class="btn btn-whatsapp" href="${buildWhatsAppUrl(`Hi Beccatee Atelier, I want to book ${service.title}. Please share the next steps.`)}" target="_blank" rel="noreferrer">
+                    Book on WhatsApp
+                  </a>
                 </article>
               `
             )
             .join('')}
-        </div>
-      </div>
-
-      <div class="card panel dark-panel">
-        <p class="eyebrow">Conversion channels</p>
-        <div class="cards-grid two-up compact-top">
-          ${smallFeatureCard(
-            'Custom projects',
-            'Bridal and couture clients can move from browsing to inquiry in one guided path.'
-          )}
-          ${smallFeatureCard(
-            'Secure deposits',
-            'Payment routing is now visible instead of hidden inside conversations.'
-          )}
-          ${smallFeatureCard(
-            'Live operations',
-            'Business cues make the studio feel active rather than dormant.'
-          )}
-          ${smallFeatureCard(
-            'Premium trust',
-            'Better information architecture reduces hesitation before outreach.'
-          )}
         </div>
       </div>
     </section>
@@ -575,255 +299,87 @@ function renderServicesPage() {
 
 function renderAcademyPage() {
   return `
-    <section class="cards-grid three-up">
-      ${academyTracks
-        .map(
-          (track) => `
-            <article class="card panel">
-              <div class="icon-badge">AC</div>
-              <h3>${escapeHtml(track.title)}</h3>
-              <p>${escapeHtml(track.summary)}</p>
-              <ul class="feature-list">
-                ${track.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}
-              </ul>
-            </article>
-          `
-        )
-        .join('')}
-    </section>
-
-    <section class="content-grid two-up stack-section">
-      <div class="card panel">
-        ${sectionHeading(
-          'Student outcomes',
-          'A clearer curriculum makes the academy offer feel serious.',
-          'Instead of a loose topic list, the program shows how students move from basics to polished work.'
-        )}
-        <ul class="feature-list compact-top">
-          ${academyBenefits.map((benefit) => `<li>${escapeHtml(benefit)}</li>`).join('')}
-        </ul>
-      </div>
-
-      <div class="card panel dark-panel">
-        <p class="eyebrow">12-weekend learning path</p>
-        <div class="stack-list compact-top">
-          ${academyTimeline
-            .map(
-              (item) => `
-                <article class="mini-card outline-card">
-                  <p class="mini-label">${escapeHtml(item.week)}</p>
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p>${escapeHtml(item.detail)}</p>
-                </article>
-              `
-            )
-            .join('')}
+    <section class="page-section">
+      <div class="container">
+        ${pageIntro(academyProgram.heading, 'This is the conversion page for the next Beccatee Atelier academy cohort.')}
+        <div class="academy-flyer-wrap">
+          <img class="flyer-image flyer-medium" src="${brandAssets.trainingFlyer}" alt="12 Weekends Intermediate Fashion Training flyer" />
         </div>
-      </div>
-    </section>
-  `;
-}
 
-function renderAtelierPage() {
-  return `
-    <section class="cards-grid three-up">
-      ${atelierServices
-        .map(
-          (service) => `
-            <article class="card panel">
-              <h3>${escapeHtml(service.title)}</h3>
-              <p>${escapeHtml(service.description)}</p>
-              <p class="price">${escapeHtml(service.price)}</p>
-            </article>
-          `
-        )
-        .join('')}
-    </section>
+        <section class="stack-section">
+          <article class="detail-card">
+            <h2>Program Details</h2>
+            <dl class="detail-list">
+              ${academyProgram.details
+                .map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`)
+                .join('')}
+            </dl>
+          </article>
+        </section>
 
-    <section class="content-grid two-up stack-section">
-      <div class="card panel dark-panel">
-        ${sectionHeading(
-          'How projects move',
-          'A visible process makes premium pricing easier to understand.',
-          'The atelier page explains what happens between the first conversation and final handoff.'
-        )}
-        <div class="stack-list compact-top">
-          ${atelierProcess
-            .map(
-              (item) => `
-                <article class="mini-card outline-card">
-                  <p class="mini-label">${escapeHtml(item.step)}</p>
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p>${escapeHtml(item.detail)}</p>
-                </article>
-              `
-            )
-            .join('')}
-        </div>
-      </div>
-
-      <div class="gallery-grid atelier-gallery">
-        ${galleryShots
-          .map(
-            (item) => `
-              <article class="card gallery-card">
-                <img class="gallery-image" src="${item.image}" alt="${escapeHtml(item.title)}" />
-                <p>${escapeHtml(item.title)}</p>
-              </article>
-            `
-          )
-          .join('')}
-        <article class="card panel wide-card">
-          <p class="eyebrow">Client view</p>
-          <p class="quote">"${escapeHtml(testimonials[0].quote)}"</p>
-          <p class="quote-author">${escapeHtml(testimonials[0].name)} · ${escapeHtml(testimonials[0].role)}</p>
-        </article>
-      </div>
-    </section>
-  `;
-}
-
-function renderJournalPage() {
-  return `
-    <section class="cards-grid three-up">
-      ${journalStories
-        .map(
-          (story) => `
-            <article class="card panel">
-              <p class="mini-label">${escapeHtml(story.category)}</p>
-              <h3>${escapeHtml(story.title)}</h3>
-              <p>${escapeHtml(story.excerpt)}</p>
-              <a class="inline-link" href="${pageUrl('contact')}">Turn this into a consultation</a>
-            </article>
-          `
-        )
-        .join('')}
-    </section>
-
-    <section class="content-grid two-up stack-section">
-      <div class="card panel">
-        ${sectionHeading(
-          'Why this matters',
-          'The journal makes the site feel current, real, and lived-in.',
-          'Professional websites feel active, and this content layer creates that feeling.'
-        )}
-        <ul class="feature-list compact-top">
-          ${journalHighlights.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
-        </ul>
-      </div>
-
-      <div class="card panel newsletter-panel">
-        <p class="eyebrow">Studio newsletter</p>
-        <h3>Get styling notes, launch alerts, and new cohort announcements.</h3>
-        <p>A modern fashion site usually includes an audience-growth layer. This static version keeps the sign-up UI ready.</p>
-        ${
-          state.newsletterStatus
-            ? `<div class="status info compact-top"><p>${escapeHtml(state.newsletterStatus)}</p></div>`
-            : ''
-        }
-        <form class="newsletter-form compact-top" data-newsletter-form>
-          <label>
-            <span class="sr-only">Email address</span>
-            <input type="email" name="email" placeholder="Enter email address" required />
-          </label>
-          <button class="btn btn-light" type="submit">Join the list</button>
-        </form>
-      </div>
-    </section>
-  `;
-}
-
-function renderPaymentsPage() {
-  const activePlan = paymentPlans.find((plan) => plan.slug === state.selectedPlan) || paymentPlans[0];
-  const statusCard = renderPaymentStatus();
-
-  return `
-    <section class="cards-grid three-up">
-      ${paymentPlans
-        .map(
-          (plan) => `
-            <button
-              type="button"
-              class="card panel selectable-card ${plan.slug === state.selectedPlan ? 'selected' : ''}"
-              data-plan="${plan.slug}"
-            >
-              <p class="mini-label">${escapeHtml(plan.subtitle)}</p>
-              <h3>${escapeHtml(plan.title)}</h3>
-              <p>${escapeHtml(plan.description)}</p>
-              <p class="price">${escapeHtml(plan.amountLabel)}</p>
-            </button>
-          `
-        )
-        .join('')}
-    </section>
-
-    <section class="content-grid payment-layout stack-section">
-      <div class="stack-list">
-        <div class="card panel">
-          ${sectionHeading(
-            'Static hosting note',
-            'This payment page works on GitHub Pages without a build step.',
-            'Set a Paystack public key in the config snippet for inline checkout, or use the manual follow-up path for assisted payment.'
-          )}
-          <div class="stack-list compact-top">
-            ${paymentSteps
+        <section class="stack-section">
+          ${sectionHeading('Curriculum', 'What You Will Learn', 'A practical intermediate curriculum built around skirts, necklines, sleeves, pants, bodices, capes, and collars.')}
+          <div class="cards-grid three-up compact-top">
+            ${curriculum
               .map(
-                (item) => `
-                  <article class="mini-card outline-card">
-                    <p class="mini-label">${escapeHtml(item.step)}</p>
-                    <h3>${escapeHtml(item.title)}</h3>
-                    <p>${escapeHtml(item.detail)}</p>
+                (group) => `
+                  <article class="curriculum-card">
+                    <h3>${escapeHtml(group.title)}</h3>
+                    <ul class="feature-list">
+                      ${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+                    </ul>
                   </article>
                 `
               )
               .join('')}
           </div>
-        </div>
+        </section>
 
-        <div class="card panel">
-          <p class="eyebrow">Setup help</p>
-          <ul class="feature-list compact-top">
-            <li>Keep only the Paystack public key in the frontend config.</li>
-            <li>Use <code>payments.html</code> as the callback page for this static deployment.</li>
-            <li>For server-side verification, move the API handlers to a serverless host later.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card payment-card">
-        <div class="row-split">
-          <div>
-            <p class="mini-label payment-kicker">Selected payment</p>
-            <h3>${escapeHtml(activePlan.title)}</h3>
-          </div>
-          <span class="price-chip">${escapeHtml(activePlan.amountLabel)}</span>
-        </div>
-        <p class="payment-copy">
-          Complete this form to launch Paystack checkout for the selected payment lane or prepare a manual follow-up reference.
-        </p>
-        ${statusCard}
-        <form class="form-grid compact-top" data-payment-form>
-          <label>
-            <span>Full name</span>
-            <input type="text" name="name" placeholder="Jane Doe" required />
-          </label>
-          <label>
-            <span>Phone number</span>
-            <input type="tel" name="phone" placeholder="+234 XXX XXX XXXX" required />
-          </label>
-          <label class="full-span">
-            <span>Email address</span>
-            <input type="email" name="email" placeholder="jane@example.com" required />
-          </label>
-          <div class="summary-box full-span">
-            <strong>${escapeHtml(activePlan.title)}</strong>
-            <p>${escapeHtml(activePlan.description)}</p>
-          </div>
-          <div class="form-actions full-span">
-            <p>Supports card, bank transfer, USSD, and supported channels via Paystack.</p>
-            <button class="btn btn-dark" type="submit">Launch checkout</button>
-          </div>
-        </form>
+        <section class="stack-section">
+          <article class="form-card" id="apply-form">
+            <h2>Application Form</h2>
+            <p>Complete the form below and send your application directly on WhatsApp.</p>
+            ${renderApplicationStatus()}
+            <form class="form-grid compact-top" data-application-form>
+              <label>
+                <span>Full Name</span>
+                <input type="text" name="name" required />
+              </label>
+              <label>
+                <span>Phone Number</span>
+                <input type="tel" name="phone" required />
+              </label>
+              <label>
+                <span>Email Address</span>
+                <input type="email" name="email" required />
+              </label>
+              <label>
+                <span>WhatsApp Number</span>
+                <input type="tel" name="whatsapp" placeholder="If different from phone" />
+              </label>
+              <label>
+                <span>Prior Experience</span>
+                <select name="experience" required>
+                  ${applicationFields.experienceOptions.map((option) => `<option>${escapeHtml(option)}</option>`).join('')}
+                </select>
+              </label>
+              <label>
+                <span>How did you hear about us?</span>
+                <select name="referral" required>
+                  ${applicationFields.referralOptions.map((option) => `<option>${escapeHtml(option)}</option>`).join('')}
+                </select>
+              </label>
+              <label class="full-span">
+                <span>Why do you want to learn fashion design?</span>
+                <textarea name="reason" rows="5"></textarea>
+              </label>
+              <div class="full-span form-actions">
+                <p>Need help with your application fee? Use the Contact page or WhatsApp to ask for payment guidance.</p>
+                <button class="btn btn-gold" type="submit">Send Application via WhatsApp</button>
+              </div>
+            </form>
+          </article>
+        </section>
       </div>
     </section>
   `;
@@ -831,89 +387,77 @@ function renderPaymentsPage() {
 
 function renderContactPage() {
   return `
-    <section class="content-grid contact-layout">
-      <div class="stack-list">
-        ${contactChannels
-          .map(
-            (channel) => `
-              <article class="card panel">
-                <p class="mini-label">${escapeHtml(channel.label)}</p>
-                <p>${escapeHtml(channel.value)}</p>
-              </article>
-            `
-          )
-          .join('')}
-        <article class="card panel">
-          <p class="mini-label">Fast path</p>
-          <p>Use the form for academy applications, couture inquiries, consultation requests, or post-payment follow-up.</p>
-        </article>
-      </div>
+    <section class="page-section">
+      <div class="container">
+        ${pageIntro('Contact Beccatee Atelier', 'Have questions? Chat with us on WhatsApp or send a quick inquiry below.')}
+        <div class="contact-logo-wrap">
+          <img class="contact-logo" src="${brandAssets.logo}" alt="${escapeHtml(brand.name)} logo" />
+        </div>
 
-      <div class="card payment-card">
-        <h3>Start your inquiry</h3>
-        <p class="payment-copy">
-          This static form prepares your follow-up message so the site still works cleanly on GitHub Pages without a backend.
-        </p>
-        ${renderContactStatus()}
-        <form class="form-grid compact-top" data-contact-form>
-          <label>
-            <span>Full name</span>
-            <input type="text" name="name" placeholder="Jane Doe" required />
-          </label>
-          <label>
-            <span>Phone number</span>
-            <input type="tel" name="phone" placeholder="+234 XXX XXX XXXX" required />
-          </label>
-          <label>
-            <span>Email address</span>
-            <input type="email" name="email" placeholder="jane@example.com" required />
-          </label>
-          <label>
-            <span>Interest</span>
-            <select name="interest" required>
-              <option>Academy application</option>
-              <option selected>Bespoke tailoring</option>
-              <option>Bridal project</option>
-              <option>Private consultation</option>
-              <option>Payment follow-up</option>
-            </select>
-          </label>
-          <label class="full-span">
-            <span>Project notes</span>
-            <textarea name="message" rows="5" placeholder="Tell us about your event, timeline, learning goal, or payment reference."></textarea>
-          </label>
-          <div class="form-actions full-span">
-            <p>Responses typically start within two hours.</p>
-            <button class="btn btn-dark" type="submit">Prepare inquiry</button>
+        <section class="contact-layout stack-section">
+          <div class="stack-list">
+            ${contactCards
+              .map(
+                (card, index) => `
+                  <article class="contact-card ${index === 0 ? 'contact-card-primary' : ''}">
+                    <p class="section-kicker">${escapeHtml(card.label)}</p>
+                    <p>${escapeHtml(card.value)}</p>
+                    ${
+                      index === 0
+                        ? `<a class="btn btn-whatsapp" href="${card.href}" target="_blank" rel="noreferrer">Chat on WhatsApp</a>`
+                        : card.href
+                          ? `<a class="text-link" href="${card.href}" target="${card.href.startsWith('http') ? '_blank' : '_self'}" rel="noreferrer">Open</a>`
+                          : ''
+                    }
+                  </article>
+                `
+              )
+              .join('')}
           </div>
-        </form>
-      </div>
-    </section>
 
-    <section class="stack-section">
-      ${sectionHeading(
-        'Frequently asked',
-        'FAQ panels make the contact area feel complete.',
-        'These answers handle common concerns before a visitor sends a message.'
-      )}
-      <div class="faq-list">
-        ${faqs
-          .map(
-            (item, index) => `
-              <article class="card faq-item">
-                <button type="button" class="faq-trigger" data-faq="${index}">
-                  <span>${escapeHtml(item.question)}</span>
-                  <span>${state.openFaq === index ? '−' : '+'}</span>
-                </button>
-                ${
-                  state.openFaq === index
-                    ? `<p class="faq-answer">${escapeHtml(item.answer)}</p>`
-                    : ''
-                }
-              </article>
-            `
-          )
-          .join('')}
+          <article class="form-card">
+            <h2>Quick Inquiry</h2>
+            <p>Send your question directly to Beccatee Atelier on WhatsApp.</p>
+            ${renderContactStatus()}
+            <form class="form-grid compact-top" data-contact-form>
+              <label>
+                <span>Name</span>
+                <input type="text" name="name" required />
+              </label>
+              <label>
+                <span>Phone</span>
+                <input type="tel" name="phone" required />
+              </label>
+              <label class="full-span">
+                <span>Message</span>
+                <textarea name="message" rows="6" required></textarea>
+              </label>
+              <div class="full-span form-actions">
+                <p>Primary response channel: WhatsApp.</p>
+                <button class="btn btn-whatsapp" type="submit">Send via WhatsApp</button>
+              </div>
+            </form>
+          </article>
+        </section>
+
+        <section class="stack-section">
+          ${sectionHeading('FAQ', 'Frequently Asked Questions', 'Answers to common questions about measurements, bridal timelines, the academy, payments, and delivery.')}
+          <div class="faq-list compact-top">
+            ${faqs
+              .map(
+                (item, index) => `
+                  <article class="faq-item">
+                    <button type="button" class="faq-trigger" data-faq="${index}">
+                      <span>${escapeHtml(item.question)}</span>
+                      <span>${state.openFaq === index ? '−' : '+'}</span>
+                    </button>
+                    ${state.openFaq === index ? `<p class="faq-answer">${escapeHtml(item.answer)}</p>` : ''}
+                  </article>
+                `
+              )
+              .join('')}
+          </div>
+        </section>
       </div>
     </section>
   `;
@@ -923,132 +467,53 @@ function handleContactSubmit(form) {
   const formData = new FormData(form);
   const name = String(formData.get('name') || '').trim();
   const phone = String(formData.get('phone') || '').trim();
-  const email = String(formData.get('email') || '').trim();
-  const interest = String(formData.get('interest') || '').trim();
   const message = String(formData.get('message') || '').trim();
-  const subject = `Website inquiry: ${interest}`;
   const body = [
+    'Hi Beccatee Atelier, I have an inquiry.',
     `Name: ${name}`,
     `Phone: ${phone}`,
-    `Email: ${email}`,
-    `Interest: ${interest}`,
-    '',
-    'Project notes:',
-    message || 'No additional notes provided.',
+    `Message: ${message || 'No additional details provided.'}`,
   ].join('\n');
 
   state.contactStatus = {
     name,
-    interest,
-    emailHref: `mailto:beccatee.atelier@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-    whatsappHref: `https://wa.me/2349077456229?text=${encodeURIComponent(body)}`,
+    whatsappHref: buildWhatsAppUrl(body),
   };
+  openExternalTarget(state.contactStatus.whatsappHref);
   render();
 }
 
-async function handlePaymentSubmit(form) {
-  const activePlan = paymentPlans.find((plan) => plan.slug === state.selectedPlan) || paymentPlans[0];
+function handleApplicationSubmit(form) {
   const formData = new FormData(form);
   const name = String(formData.get('name') || '').trim();
-  const email = String(formData.get('email') || '').trim();
   const phone = String(formData.get('phone') || '').trim();
-  const reference = createPaymentReference();
-  const paystackKey =
-    window.__FASHION_HUB_CONFIG__?.paystackPublicKey || window.PAYSTACK_PUBLIC_KEY || '';
-  const callbackUrl =
-    window.__FASHION_HUB_CONFIG__?.paymentCallbackUrl ||
-    `${window.location.origin}${window.location.pathname}`;
+  const email = String(formData.get('email') || '').trim();
+  const whatsapp = String(formData.get('whatsapp') || '').trim() || phone;
+  const experience = String(formData.get('experience') || '').trim();
+  const referral = String(formData.get('referral') || '').trim();
+  const reason = String(formData.get('reason') || '').trim();
+  const message = [
+    'Hi Beccatee Atelier, I want to apply for the 12 Weekends Intermediate Fashion Training.',
+    `Name: ${name}`,
+    `Phone: ${phone}`,
+    `Email: ${email}`,
+    `WhatsApp: ${whatsapp}`,
+    `Experience: ${experience}`,
+    `Referral: ${referral}`,
+    `Why fashion: ${reason || 'No additional message provided.'}`,
+  ].join('\n');
+  const whatsappHref = buildWhatsAppUrl(message);
+  const mailtoHref = buildMailtoUrl(
+    'Academy Application - 12 Weekends Intermediate Fashion Training',
+    message
+  );
 
-  if (!paystackKey) {
-    state.paymentStatus = {
-      type: 'warning',
-      title: 'Paystack public key not configured.',
-      message:
-        'Add your public key to window.__FASHION_HUB_CONFIG__.paystackPublicKey in the HTML file to enable inline checkout on GitHub Pages.',
-      reference,
-      actionHref: pageUrl('contact'),
-      actionLabel: 'Contact studio instead',
-    };
-    render();
-    return;
-  }
-
-  try {
-    state.paymentStatus = {
-      type: 'info',
-      title: 'Launching checkout...',
-      message: 'The payment modal is being prepared.',
-    };
-    render();
-
-    const PaystackPop = await loadPaystackScript();
-    const checkout = buildPaystackInlineConfig({
-      key: paystackKey,
-      email,
-      amount: activePlan.amount,
-      planCode: activePlan.planCode,
-      callbackUrl,
-      reference,
-      metadata: {
-        customer_name: name,
-        customer_phone: phone,
-        plan_slug: activePlan.slug,
-        plan_title: activePlan.title,
-        source: 'github-pages-static-site',
-      },
-    });
-
-    const handler = PaystackPop.setup({
-      ...checkout,
-      firstname: name,
-      callback: () => {
-        state.paymentStatus = {
-          type: 'success',
-          title: 'Checkout completed.',
-          message: `Reference ${reference} was captured successfully.`,
-          reference,
-        };
-        render();
-      },
-      onClose: () => {
-        state.paymentStatus = {
-          type: 'info',
-          title: 'Checkout closed.',
-          message: 'You can retry payment later or contact the studio for assisted payment.',
-          reference,
-        };
-        render();
-      },
-    });
-
-    handler.openIframe();
-  } catch (error) {
-    state.paymentStatus = {
-      type: 'error',
-      title: 'Unable to start checkout.',
-      message: error instanceof Error ? error.message : 'Payment failed to start.',
-      reference,
-    };
-    render();
-  }
-}
-
-function hydratePaymentStatusFromUrl() {
-  const url = new URL(window.location.href);
-  const reference = url.searchParams.get('reference') || url.searchParams.get('trxref');
-  if (!reference) {
-    return;
-  }
-
-  state.activePage = 'payments';
-  state.paymentStatus = {
-    type: 'success',
-    title: 'Payment callback received.',
-    message: 'A Paystack callback returned to this page. Use the reference below for confirmation and follow-up.',
-    reference,
+  state.applicationStatus = {
+    whatsappHref,
+    mailtoHref,
   };
-
-  window.history.replaceState({}, document.title, window.location.pathname);
+  openExternalTarget(whatsappHref, mailtoHref);
+  render();
 }
 
 function renderContactStatus() {
@@ -1058,37 +523,28 @@ function renderContactStatus() {
 
   return `
     <div class="status success">
-      <p class="status-title">Inquiry prepared for ${escapeHtml(state.contactStatus.name || 'you')}.</p>
-      <p>Send it by email or WhatsApp to complete the static-site contact flow.</p>
+      <p class="status-title">Message prepared for ${escapeHtml(state.contactStatus.name || 'you')}.</p>
+      <p>Your inquiry is ready on WhatsApp. If it did not open automatically, use the button below.</p>
       <div class="button-row compact-top">
-        <a class="btn btn-dark" href="${state.contactStatus.emailHref}">Send email</a>
-        <a class="btn btn-ghost-dark" href="${state.contactStatus.whatsappHref}" target="_blank" rel="noreferrer">Open WhatsApp</a>
+        <a class="btn btn-whatsapp" href="${state.contactStatus.whatsappHref}" target="_blank" rel="noreferrer">Open WhatsApp</a>
       </div>
     </div>
   `;
 }
 
-function renderPaymentStatus() {
-  if (!state.paymentStatus) {
+function renderApplicationStatus() {
+  if (!state.applicationStatus) {
     return '';
   }
 
   return `
-    <div class="status ${escapeHtml(state.paymentStatus.type)}">
-      <p class="status-title">${escapeHtml(state.paymentStatus.title)}</p>
-      <p>${escapeHtml(state.paymentStatus.message)}</p>
-      ${
-        state.paymentStatus.reference
-          ? `<p class="reference">Reference: ${escapeHtml(state.paymentStatus.reference)}</p>`
-          : ''
-      }
-      ${
-        state.paymentStatus.actionHref
-          ? `<a class="inline-link compact-top inline-block" href="${state.paymentStatus.actionHref}">${escapeHtml(
-              state.paymentStatus.actionLabel || 'Continue'
-            )}</a>`
-          : ''
-      }
+    <div class="status success">
+      <p class="status-title">Application sent! We'll contact you within 24 hours to confirm your slot.</p>
+      <p>If WhatsApp did not open automatically, use one of the actions below.</p>
+      <div class="button-row compact-top">
+        <a class="btn btn-whatsapp" href="${state.applicationStatus.whatsappHref}" target="_blank" rel="noreferrer">Open WhatsApp</a>
+        <a class="btn btn-outline" href="${state.applicationStatus.mailtoHref}">Email Instead</a>
+      </div>
     </div>
   `;
 }
@@ -1103,31 +559,20 @@ function sectionHeading(eyebrow, title, description) {
   `;
 }
 
-function statCard(value, label, detail = '') {
+function pageIntro(title, description) {
   return `
-    <article class="card stat-card">
-      <p class="stat-value">${escapeHtml(value)}</p>
-      <p class="stat-label">${escapeHtml(label)}</p>
-      ${detail ? `<p class="stat-detail">${escapeHtml(detail)}</p>` : ''}
-    </article>
+    <div class="page-intro">
+      <p class="section-kicker">${escapeHtml(brand.fullName)}</p>
+      <h1>${escapeHtml(title)}</h1>
+      <p>${escapeHtml(description)}</p>
+    </div>
   `;
 }
 
-function featureCard(title, description, cta, href) {
+function simpleCard(text) {
   return `
-    <article class="card panel">
-      <h3>${escapeHtml(title)}</h3>
-      <p>${escapeHtml(description)}</p>
-      <a class="inline-link" href="${href}">${escapeHtml(cta)}</a>
-    </article>
-  `;
-}
-
-function smallFeatureCard(title, description) {
-  return `
-    <article class="mini-card">
-      <h3>${escapeHtml(title)}</h3>
-      <p>${escapeHtml(description)}</p>
+    <article class="info-card">
+      <p>✓ ${escapeHtml(text)}</p>
     </article>
   `;
 }
@@ -1149,6 +594,27 @@ function pageUrl(slug) {
   return slug === 'home' ? './index.html' : `./${slug}.html`;
 }
 
+function setFavicon() {
+  let favicon = document.querySelector('link[rel="icon"]');
+  if (!favicon) {
+    favicon = document.createElement('link');
+    favicon.setAttribute('rel', 'icon');
+    document.head.appendChild(favicon);
+  }
+  favicon.setAttribute('href', brandAssets.favicon);
+}
+
+function openExternalTarget(primaryHref, fallbackHref = '') {
+  try {
+    const opened = window.open(primaryHref, '_blank', 'noopener,noreferrer');
+    if (!opened) {
+      window.location.href = fallbackHref || primaryHref;
+    }
+  } catch (error) {
+    window.location.href = fallbackHref || primaryHref;
+  }
+}
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -1158,27 +624,18 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
-function loadPaystackScript() {
-  if (window.PaystackPop) {
-    return Promise.resolve(window.PaystackPop);
-  }
+function iconWhatsapp() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 2.2A9.78 9.78 0 0 0 3.64 17.1L2 22l5.02-1.57A9.8 9.8 0 1 0 12 2.2Zm0 17.8a8.03 8.03 0 0 1-4.07-1.11l-.29-.17-2.98.93.97-2.9-.19-.3A8.06 8.06 0 1 1 12 20Zm4.41-5.95c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1-.37-1.9-1.18-.7-.63-1.18-1.4-1.32-1.64-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.42-.54-.43h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.69 2.58 4.1 3.62.57.24 1.01.38 1.36.49.57.18 1.08.15 1.49.09.46-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z" fill="currentColor"/>
+    </svg>
+  `;
+}
 
-  return new Promise((resolve, reject) => {
-    const existingScript = document.querySelector('script[data-paystack-script="true"]');
-    if (existingScript) {
-      existingScript.addEventListener('load', () => resolve(window.PaystackPop), { once: true });
-      existingScript.addEventListener('error', () => reject(new Error('Paystack failed to load.')), {
-        once: true,
-      });
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://js.paystack.co/v1/inline.js';
-    script.async = true;
-    script.dataset.paystackScript = 'true';
-    script.onload = () => resolve(window.PaystackPop);
-    script.onerror = () => reject(new Error('Paystack failed to load.'));
-    document.body.appendChild(script);
-  });
+function iconChevronDown() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M6.7 9.3a1 1 0 0 1 1.4 0l3.9 3.9 3.9-3.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 10.7a1 1 0 0 1 0-1.4Z" fill="currentColor"/>
+    </svg>
+  `;
 }
