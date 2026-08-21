@@ -1,75 +1,122 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  pages,
-  resolvePageFromHash,
+  academyApplicationFields,
+  academyFaqs,
+  academyPreview,
+  academyProgram,
+  brand,
+  buildWhatsAppUrl,
+  contactFaqs,
+  contactItems,
+  curriculum,
   getPageMeta,
-  paymentPlans,
-  operationsMetrics,
-  createPaymentReference,
-  buildPaystackInlineConfig,
+  pages,
+  services,
 } from '../site-data.mjs';
 
-test('resolvePageFromHash falls back to home for unknown routes', () => {
-  assert.equal(resolvePageFromHash('#/unknown'), 'home');
-});
-
-test('resolvePageFromHash resolves supported slugs', () => {
-  assert.equal(resolvePageFromHash('#/academy'), 'academy');
-  assert.equal(resolvePageFromHash('#/payments'), 'payments');
-  assert.equal(resolvePageFromHash('#contact'), 'contact');
-});
-
-test('pages expose a complete multi-page navigation model', () => {
-  assert.ok(pages.length >= 7);
+test('pages expose the required four-page navigation model', () => {
   assert.deepEqual(
     pages.map((page) => page.slug),
-    ['home', 'services', 'academy', 'atelier', 'journal', 'payments', 'contact']
+    ['home', 'services', 'academy', 'contact']
   );
   assert.deepEqual(
-    pages.map((page) => page.label),
-    ['Home', 'Services', 'Academy', 'Atelier', 'Journal', 'Payments', 'Contact']
+    pages.map((page) => page.title),
+    [
+      'Beccatee Atelier | Bespoke Fashion & Training Academy Nigeria',
+      'Our Services | Beccatee Atelier',
+      'Apply Now | 12 Weekends Fashion Training — Beccatee Atelier',
+      'Contact | Beccatee Atelier',
+    ]
   );
 });
 
-test('getPageMeta returns the active page definition', () => {
-  assert.equal(getPageMeta('atelier').title, 'Bespoke Atelier');
+test('getPageMeta falls back to home and resolves supported pages', () => {
+  assert.equal(getPageMeta('unknown').slug, 'home');
+  assert.equal(getPageMeta('academy').path, './academy.html');
 });
 
-test('payment plans expose premium checkout options', () => {
-  assert.ok(paymentPlans.length >= 3);
-  assert.equal(paymentPlans[0].currency, 'NGN');
-  assert.match(paymentPlans[0].amountLabel, /NGN/i);
+test('brand contact details use one WhatsApp number everywhere', () => {
+  assert.equal(brand.name, 'Beccatee Atelier');
+  assert.equal(brand.tagline, '...FASHION THAT POPS');
+  assert.equal(brand.whatsappNumber, '2347065854471');
+  assert.equal(brand.whatsappUrl, 'https://wa.me/2347065854471');
+  assert.equal(brand.phoneDisplay, '+234 706 585 4471');
+  assert.equal(brand.email, 'beccatee.atelier@gmail.com');
 });
 
-test('operations metrics support real-time studio storytelling', () => {
-  assert.ok(operationsMetrics.length >= 3);
-  assert.ok(operationsMetrics.every((metric) => metric.label && metric.value));
+test('services cover the six requested fashion offerings', () => {
+  assert.deepEqual(
+    services.map((service) => service.title),
+    [
+      'Bridal Dresses',
+      'Aso Ebi',
+      'Children Wears',
+      'Bespoke Dresses',
+      'Tailored-to-Wear',
+      'Ready-to-Wear',
+    ]
+  );
+  assert.ok(services.every((service) => service.href.startsWith('https://wa.me/2347065854471')));
 });
 
-test('createPaymentReference generates a prefixed unique reference', () => {
-  const reference = createPaymentReference();
-
-  assert.match(reference, /^FH-/);
-  assert.ok(reference.length > 12);
+test('academy preview and program details match the training brief', () => {
+  assert.equal(
+    academyPreview.title,
+    '12 Weekends Intermediate Fashion Training — Sept 12 – Nov 28, 2026 — ₦250,000'
+  );
+  assert.deepEqual(academyProgram.details, [
+    ['Dates', '12 Sept – 28 Nov 2026'],
+    ['Schedule', 'Sat & Sun 2pm–6pm'],
+    ['Duration', '12 Weekends'],
+    ['Level', 'Intermediate'],
+    ['Fee', '₦250,000'],
+    ['Location', 'RCCG Redemption Camp Along Lagos-Ibadan Expressway'],
+  ]);
 });
 
-test('buildPaystackInlineConfig converts amounts to kobo and keeps metadata', () => {
-  const config = buildPaystackInlineConfig({
-    key: 'pk_test_example',
-    email: 'client@example.com',
-    amount: 125000,
-    planCode: 'bridal-bespoke',
-    metadata: { source: 'website' },
-    callbackUrl: 'https://fashionhub.example/payments/callback',
-    reference: 'FH-123',
-  });
+test('curriculum fixes the flyer content and typo corrections', () => {
+  assert.deepEqual(curriculum[0].items, ['Tulip skirt', 'Skirt with vent', 'Godets in skirt']);
+  assert.deepEqual(curriculum[1].items, [
+    'Built-up',
+    'Cowl',
+    'Illusion neckline',
+    'Surplice',
+    'Halter neck',
+  ]);
+  assert.deepEqual(curriculum[2].items, [
+    'Kimono',
+    'Raglan',
+    'Bell',
+    'Balloon',
+    'Slash and spread',
+  ]);
+  assert.equal(curriculum[5].title, 'Capes and Collars');
+});
 
-  assert.equal(config.key, 'pk_test_example');
-  assert.equal(config.email, 'client@example.com');
-  assert.equal(config.amount, 12500000);
-  assert.equal(config.plan, 'bridal-bespoke');
-  assert.equal(config.ref, 'FH-123');
-  assert.deepEqual(config.metadata, { source: 'website' });
-  assert.equal(config.callback_url, 'https://fashionhub.example/payments/callback');
- });
+test('academy and contact forms expose the required options and FAQs', () => {
+  assert.deepEqual(academyApplicationFields.experienceOptions, [
+    'No experience',
+    'Beginner',
+    'Some experience',
+    'Advanced',
+  ]);
+  assert.ok(academyApplicationFields.referralOptions.length >= 4);
+  assert.equal(contactFaqs.length, 5);
+  assert.equal(academyFaqs.length, 5);
+});
+
+test('contact items include phone, email, instagram, and location', () => {
+  assert.deepEqual(
+    contactItems.map((item) => item.label),
+    ['Phone', 'Email', 'Instagram', 'Location']
+  );
+});
+
+test('buildWhatsAppUrl encodes prefilled messages for the official number', () => {
+  const href = buildWhatsAppUrl('Hello Beccatee Atelier\nName: Jane Doe');
+  assert.equal(
+    href,
+    'https://wa.me/2347065854471?text=Hello%20Beccatee%20Atelier%0AName%3A%20Jane%20Doe'
+  );
+});
