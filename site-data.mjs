@@ -15,6 +15,14 @@ export const pages = [
       'A cinematic overview of the atelier, academy, and premium service experience.',
   },
   {
+    slug: 'services',
+    label: 'Services',
+    title: 'Fashion Hub Services',
+    eyebrow: 'Luxury client journeys',
+    description:
+      'Premium styling, bridal design, production support, and event-ready creative services.',
+  },
+  {
     slug: 'academy',
     label: 'Academy',
     title: 'Fashion Academy',
@@ -39,6 +47,14 @@ export const pages = [
       'Lookbooks, process notes, trend insights, and seasonal feature stories.',
   },
   {
+    slug: 'payments',
+    label: 'Payments',
+    title: 'Secure Payments',
+    eyebrow: 'Deposits and balances',
+    description:
+      'Pay securely for consultations, couture deposits, and academy slots with guided checkout.',
+  },
+  {
     slug: 'contact',
     label: 'Contact',
     title: 'Book a Consultation',
@@ -61,11 +77,77 @@ export function getRouteHref(slug) {
   return slug === 'home' ? '#/' : `#/${slug}`;
 }
 
+export function normalizeAmountToKobo(amount) {
+  return Math.round(Number(amount || 0) * 100);
+}
+
+export function createPaymentReference(prefix = 'FH') {
+  const stamp = Date.now().toString(36).toUpperCase();
+  const nonce = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `${prefix}-${stamp}${nonce}`;
+}
+
+export function buildPaystackInlineConfig({
+  key,
+  email,
+  amount,
+  planCode,
+  metadata = {},
+  callbackUrl,
+  reference = createPaymentReference(),
+}) {
+  const config = {
+    key,
+    email,
+    amount: normalizeAmountToKobo(amount),
+    ref: reference,
+    metadata,
+  };
+
+  if (planCode) {
+    config.plan = planCode;
+  }
+
+  if (callbackUrl) {
+    config.callback_url = callbackUrl;
+  }
+
+  return config;
+}
+
 export const socialProof = [
   { label: 'Clients dressed', value: '480+' },
   { label: 'Graduates mentored', value: '160+' },
   { label: 'Bridal fittings', value: '92' },
   { label: 'Average response time', value: '2 hrs' },
+];
+
+export const operationsMetrics = [
+  { label: 'Active fittings this week', value: '14', detail: 'Dress, bridal, and final delivery sessions in progress.' },
+  { label: 'Orders in production', value: '28', detail: 'Live garment production queue across couture and occasionwear.' },
+  { label: 'Student studio seats left', value: '06', detail: 'Available places in the next academy cohort this month.' },
+  { label: 'Today response SLA', value: '18 min', detail: 'Average first-response time for premium website inquiries.' },
+];
+
+export const serviceCategories = [
+  {
+    title: 'Bridal Fashion',
+    summary: 'Signature bridal looks from concept boards to final fittings.',
+    bullets: ['Luxury bridal gowns', 'Reception and second-look styling', 'Fitting management and delivery planning'],
+    highlight: 'Most requested',
+  },
+  {
+    title: 'Occasion & Red Carpet',
+    summary: 'High-impact garments for launches, weddings, editorial campaigns, and private events.',
+    bullets: ['Statement dresses', 'Tailored eveningwear', 'Styling coordination and accessories guidance'],
+    highlight: 'Event ready',
+  },
+  {
+    title: 'Fashion Business Support',
+    summary: 'Studio consulting for learners and growing labels that want better systems and finishing.',
+    bullets: ['Private creative direction', 'Production workflow audits', 'Launch support for collections and campaigns'],
+    highlight: 'Growth layer',
+  },
 ];
 
 export const featuredMoments = [
@@ -131,16 +213,73 @@ export const atelierServices = [
     title: 'Bridal & Reception',
     description: 'Custom bridal gowns, bridal trains, second looks, and fitting-intensive reception silhouettes.',
     price: 'From 650k',
+    amount: 650000,
+    planCode: 'bridal-bespoke',
   },
   {
     title: 'Occasion Couture',
     description: 'Statement dresses, tailored eveningwear, and event-specific styling for memorable entrances.',
     price: 'From 280k',
+    amount: 280000,
+    planCode: 'occasion-couture',
   },
   {
     title: 'Private Consultations',
     description: 'Fabric review, wardrobe planning, fit rescue, and event styling strategy sessions.',
     price: 'From 75k',
+    amount: 75000,
+    planCode: 'private-consultation',
+  },
+];
+
+export const paymentPlans = [
+  {
+    slug: 'consultation',
+    title: 'Consultation Session',
+    subtitle: 'Fast-track advisory call or studio session',
+    amount: 75000,
+    amountLabel: 'NGN 75,000',
+    currency: 'NGN',
+    planCode: 'private-consultation',
+    description: 'Secure your preferred slot for styling, fabric, or project strategy guidance.',
+  },
+  {
+    slug: 'academy-seat',
+    title: 'Academy Seat Deposit',
+    subtitle: 'Reserve a seat in the next structured cohort',
+    amount: 120000,
+    amountLabel: 'NGN 120,000',
+    currency: 'NGN',
+    planCode: 'academy-seat',
+    description: 'Locks in enrollment review, onboarding, and your first studio preparation pack.',
+  },
+  {
+    slug: 'bridal-deposit',
+    title: 'Bridal Project Deposit',
+    subtitle: 'Begin a bridal couture production timeline',
+    amount: 350000,
+    amountLabel: 'NGN 350,000',
+    currency: 'NGN',
+    planCode: 'bridal-deposit',
+    description: 'Starts your moodboard, fabric strategy, body measurements, and fitting calendar.',
+  },
+];
+
+export const paymentSteps = [
+  {
+    step: '01',
+    title: 'Select a package',
+    detail: 'Choose the consultation, academy, or couture payment lane that matches your need.',
+  },
+  {
+    step: '02',
+    title: 'Complete secure checkout',
+    detail: 'Use Paystack to pay with card, bank transfer, USSD, or supported wallet options.',
+  },
+  {
+    step: '03',
+    title: 'Receive instant follow-up',
+    detail: 'Your receipt, next steps, and studio response are triggered immediately after payment.',
   },
 ];
 
