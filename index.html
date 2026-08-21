@@ -1,0 +1,384 @@
+import React, { useState } from 'react';
+import { 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  Phone, 
+  Mail, 
+  Scissors, 
+  Shirt, 
+  GraduationCap, 
+  Menu, 
+  X,
+  CheckCircle2,
+  ChevronRight,
+  Star
+} from 'lucide-react';
+
+export default function App() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [formStatus, setFormStatus] = useState(null); // 'success' or null
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    setFormStatus('success');
+    setTimeout(() => setFormStatus(null), 5000);
+    e.target.reset();
+  };
+
+  const curriculum = [
+    { title: 'Skirt', details: 'Tulip skirt, Skirt with vent, Godets in skirt' },
+    { title: 'Neckline', details: 'Built-up, Cowl, Illusion neckline, Surplice, Halter neck' },
+    { title: 'Sleeve', details: 'Kimono, Raglan, Bell, Balloon, Slash and spread' },
+    { title: 'Pants', details: 'Palazzo pant, Bootcut, Barrel, Cargo pant' },
+    { title: 'Bodice', details: 'Classic blazer, Victoria corset, Slash and spread, Waist snatching' },
+    { title: 'Capes and Collars', details: 'Advanced styling, construction, and finishing techniques' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-neutral-50 font-sans text-neutral-900">
+      
+      {/* Navigation */}
+      <nav className="fixed w-full bg-purple-950/95 backdrop-blur-sm z-50 border-b border-purple-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-purple-900 font-bold text-xl italic shadow-lg shadow-purple-500/20">
+                JB
+              </div>
+              <span className="text-white font-bold text-xl tracking-wide hidden sm:block">
+                Beccatee Atelier
+              </span>
+            </div>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex space-x-8 items-center">
+              <a href="#about" className="text-purple-100 hover:text-amber-400 transition-colors">About Us</a>
+              <a href="#academy" className="text-purple-100 hover:text-amber-400 transition-colors">Academy</a>
+              <a href="#services" className="text-purple-100 hover:text-amber-400 transition-colors">Bespoke & Consulting</a>
+              <a href="#register" className="bg-amber-400 hover:bg-amber-500 text-purple-950 px-6 py-2 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-amber-400/20">
+                Apply Now
+              </a>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center">
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-white hover:text-amber-400 focus:outline-none"
+              >
+                {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-purple-950 px-2 pt-2 pb-6 space-y-1 shadow-xl">
+            <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-purple-100 font-medium hover:bg-purple-900 rounded-md">About Us</a>
+            <a href="#academy" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-purple-100 font-medium hover:bg-purple-900 rounded-md">Academy</a>
+            <a href="#services" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-purple-100 font-medium hover:bg-purple-900 rounded-md">Bespoke Services</a>
+            <a href="#register" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 mt-4 text-center bg-amber-400 text-purple-950 font-bold rounded-md">Apply Now</a>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-purple-950 overflow-hidden">
+        {/* Abstract Background shapes */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-purple-800/50 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-amber-500/20 blur-3xl"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center space-x-2 bg-purple-900/50 border border-purple-700 rounded-full px-4 py-2 mb-6 text-amber-300 text-sm font-medium">
+                <Star size={16} className="fill-amber-300" />
+                <span>Next Cohort Starts Sept 2026</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+                Master the Art of <span className="text-amber-400">Fashion Design</span>
+              </h1>
+              <p className="text-lg md:text-xl text-purple-100 mb-8 max-w-2xl mx-auto lg:mx-0">
+                Join our exclusive 12 Weekends Intermediate Fashion Training or consult with us for your premium bespoke tailoring needs.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center lg:justify-start">
+                <a href="#register" className="flex items-center justify-center bg-amber-400 hover:bg-amber-500 text-purple-950 px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:-translate-y-1 shadow-xl shadow-amber-400/20">
+                  Register for Academy
+                  <ChevronRight size={20} className="ml-2" />
+                </a>
+                <a href="#services" className="flex items-center justify-center bg-transparent border-2 border-purple-400 text-purple-100 hover:bg-purple-800 px-8 py-4 rounded-full font-bold text-lg transition-all">
+                  Book a Consultation
+                </a>
+              </div>
+            </div>
+
+            {/* Hero Image/Card */}
+            <div className="relative mx-auto w-full max-w-md lg:max-w-full">
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative">
+                {/* Fallback pattern if image is missing, though meant to represent the golden mannequin */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-purple-900 to-amber-700 mix-blend-multiply opacity-60 z-10"></div>
+                <img 
+                  src="https://images.unsplash.com/photo-1558769132-cb1fac084092?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Fashion Mannequin" 
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Floating Price Tag */}
+                <div className="absolute bottom-6 right-6 z-20 bg-white rounded-full p-1 shadow-2xl">
+                  <div className="bg-purple-900 text-white rounded-full w-28 h-28 flex flex-col items-center justify-center border-4 border-white shadow-inner">
+                    <span className="text-xs uppercase tracking-wider font-semibold opacity-80">Fee</span>
+                    <span className="text-3xl font-extrabold text-amber-400">250k</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Details Banner */}
+      <section className="bg-amber-400 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-purple-950 font-semibold">
+            <div className="flex items-center justify-center space-x-3">
+              <Calendar className="w-8 h-8 opacity-80" />
+              <div>
+                <p className="text-sm opacity-80">Duration</p>
+                <p className="text-lg">12th Sept - 28th Nov, 2026</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-center space-x-3">
+              <Clock className="w-8 h-8 opacity-80" />
+              <div>
+                <p className="text-sm opacity-80">Schedule (Sat & Sun only)</p>
+                <p className="text-lg">2:00pm - 6:00pm</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-center space-x-3">
+              <MapPin className="w-8 h-8 opacity-80" />
+              <div>
+                <p className="text-sm opacity-80">Location</p>
+                <p className="text-lg">RCCG Camp, Lagos-Ibadan Exp.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Academy / Curriculum Section */}
+      <section id="academy" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-purple-900 font-bold tracking-wide uppercase text-sm mb-2">The Academy</h2>
+            <h3 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4">Intermediate Fashion Training</h3>
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+              A comprehensive 12-weekend intensive program designed to take your fashion design and construction skills to the next level. Here is what you will learn:
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {curriculum.map((item, index) => (
+              <div key={index} className="bg-neutral-50 rounded-2xl p-8 border border-neutral-200 hover:border-purple-300 hover:shadow-xl transition-all group">
+                <div className="w-12 h-12 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                  <Scissors size={24} />
+                </div>
+                <h4 className="text-xl font-bold text-neutral-900 mb-3">{item.title}</h4>
+                <p className="text-neutral-600 leading-relaxed">
+                  {item.details}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services & Consulting Section */}
+      <section id="services" className="py-20 bg-neutral-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            
+            <div className="order-2 lg:order-1 relative">
+              <div className="aspect-square rounded-full overflow-hidden border-8 border-neutral-800">
+                <img 
+                  src="https://images.unsplash.com/photo-1598522325752-9ba6050b1d3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Tailoring process" 
+                  className="w-full h-full object-cover opacity-80"
+                />
+              </div>
+              <div className="absolute -bottom-8 -right-8 bg-amber-400 text-neutral-900 p-8 rounded-2xl shadow-xl max-w-xs">
+                <p className="font-bold text-xl mb-2">Exceptional Fit.</p>
+                <p className="text-sm">We pride ourselves on attention to detail and perfect tailoring.</p>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2 space-y-8">
+              <div>
+                <h2 className="text-amber-400 font-bold tracking-wide uppercase text-sm mb-2">Our Services</h2>
+                <h3 className="text-3xl md:text-4xl font-extrabold mb-6">More Than Just a School</h3>
+                <p className="text-lg text-neutral-300">
+                  Not looking to learn? Beccatee Atelier offers premium bespoke tailoring and fashion consulting services for clients who desire elegance, class, and the perfect fit.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex">
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="w-10 h-10 bg-neutral-800 rounded-full flex items-center justify-center text-amber-400">
+                      <Shirt size={20} />
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h4 className="text-xl font-bold mb-2">Bespoke Tailoring</h4>
+                    <p className="text-neutral-400">Custom-made garments tailored to your exact measurements and style preferences. From casual chic to glamorous evening wear.</p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="w-10 h-10 bg-neutral-800 rounded-full flex items-center justify-center text-amber-400">
+                      <GraduationCap size={20} />
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h4 className="text-xl font-bold mb-2">Fashion Consulting</h4>
+                    <p className="text-neutral-400">Need help building your wardrobe, choosing fabrics, or planning outfits for a major event? Our experts are here to guide you.</p>
+                  </div>
+                </div>
+              </div>
+
+              <a href="#register" className="inline-block mt-4 bg-white text-neutral-900 hover:bg-neutral-200 px-8 py-3 rounded-full font-bold transition-colors">
+                Book a Session
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Registration / Contact Form */}
+      <section id="register" className="py-20 bg-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div className="grid lg:grid-cols-5">
+              
+              {/* Form Side */}
+              <div className="lg:col-span-3 p-8 md:p-12">
+                <h3 className="text-3xl font-extrabold text-neutral-900 mb-2">Get in Touch</h3>
+                <p className="text-neutral-600 mb-8">Register for the academy or book a consultation session today.</p>
+
+                {formStatus === 'success' && (
+                  <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center text-green-700">
+                    <CheckCircle2 className="w-6 h-6 mr-3" />
+                    <div>
+                      <p className="font-bold">Success!</p>
+                      <p className="text-sm">We've received your details and will contact you shortly.</p>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleRegister} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-2">Full Name</label>
+                      <input required type="text" className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all" placeholder="Jane Doe" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-700 mb-2">Phone Number</label>
+                      <input required type="tel" className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all" placeholder="+234 XXX XXX XXXX" />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">Email Address</label>
+                    <input required type="email" className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all" placeholder="jane@example.com" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">I am interested in:</label>
+                    <select required className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all bg-white">
+                      <option value="">Select an option</option>
+                      <option value="academy">12 Weekends Fashion Training (250k)</option>
+                      <option value="bespoke">Bespoke Tailoring Services</option>
+                      <option value="consulting">Fashion Consulting</option>
+                      <option value="other">Other Inquiry</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">Message (Optional)</label>
+                    <textarea rows={4} className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all" placeholder="Any specific questions?"></textarea>
+                  </div>
+
+                  <button type="submit" className="w-full bg-purple-900 hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-purple-900/30">
+                    Submit Application
+                  </button>
+                </form>
+              </div>
+
+              {/* Contact Info Side */}
+              <div className="lg:col-span-2 bg-purple-900 text-white p-8 md:p-12 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-8">Contact Information</h3>
+                  
+                  <div className="space-y-8">
+                    <div className="flex items-start">
+                      <Phone className="w-6 h-6 text-amber-400 mt-1 mr-4 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold mb-1">Call/WhatsApp</p>
+                        <p className="text-purple-200">+234 907 745 6229</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Mail className="w-6 h-6 text-amber-400 mt-1 mr-4 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold mb-1">Email Us</p>
+                        <p className="text-purple-200">beccatee.atelier@gmail.com</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <MapPin className="w-6 h-6 text-amber-400 mt-1 mr-4 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold mb-1">Training Location</p>
+                        <p className="text-purple-200">RCCG Redemption Camp,<br/>Along Lagos Ibadan Express Way.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-12 pt-12 border-t border-purple-800">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-purple-900 font-bold text-2xl italic mb-4">
+                    JB
+                  </div>
+                  <p className="text-purple-200">Crafting elegance, one stitch at a time.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-neutral-950 text-neutral-400 py-8 border-t border-neutral-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+          <p>&copy; {new Date().getFullYear()} Beccatee Atelier. All rights reserved.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="#" className="hover:text-white transition-colors">Instagram</a>
+            <a href="#" className="hover:text-white transition-colors">Facebook</a>
+            <a href="#" className="hover:text-white transition-colors">Twitter</a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
+}
+
