@@ -31,6 +31,14 @@ export const pages = [
       'Beccatee Atelier is a premium Nigerian fashion house for bespoke tailoring, bridal wear, aso ebi, childrenswear, and structured weekend fashion training.',
   },
   {
+    slug: 'about',
+    label: 'About',
+    path: './about.html',
+    title: 'About Beccatee Atelier',
+    description:
+      'Learn about Beccatee Atelier, a premium Nigerian fashion house rooted in precision, creativity, craftsmanship, and weekend fashion training.',
+  },
+  {
     slug: 'services',
     label: 'Services',
     path: './services.html',
@@ -54,7 +62,29 @@ export const pages = [
     description:
       'Contact Beccatee Atelier for bespoke bookings, academy applications, WhatsApp support, and fashion training inquiries in Nigeria.',
   },
+  {
+    slug: 'privacy',
+    label: 'Privacy',
+    path: './privacy.html',
+    title: 'Privacy Policy | Beccatee Atelier',
+    description:
+      'Read how Beccatee Atelier uses inquiry and contact form information for WhatsApp and email communication.',
+    showInNav: false,
+  },
+  {
+    slug: 'terms',
+    label: 'Terms',
+    path: './terms.html',
+    title: 'Terms & Conditions | Beccatee Atelier',
+    description:
+      'Review Beccatee Atelier terms for service bookings, academy enrollment, payment timelines, and cancellations.',
+    showInNav: false,
+  },
 ];
+
+export const navPages = pages.filter((page) => page.showInNav !== false);
+
+export const footerPages = pages.filter((page) => page.showInFooter !== false);
 
 export const homeAbout = {
   eyebrow: 'About Beccatee Atelier',
