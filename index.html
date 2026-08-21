@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Activity,
   ArrowRight,
   BookOpen,
   Briefcase,
@@ -7,7 +8,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
-  GraduationCap,
+  CreditCard,
   Mail,
   MapPin,
   Menu,
@@ -16,10 +17,12 @@ import {
   Phone,
   PlayCircle,
   Scissors,
+  ShieldCheck,
   Shirt,
   Sparkles,
   Star,
   Users,
+  Wallet,
   X,
 } from 'lucide-react';
 import {
@@ -27,14 +30,20 @@ import {
   academyTracks,
   atelierProcess,
   atelierServices,
+  buildPaystackInlineConfig,
   contactChannels,
+  createPaymentReference,
   faqs,
   featuredMoments,
   getPageMeta,
   getRouteHref,
   journalStories,
+  operationsMetrics,
   pages,
+  paymentPlans,
+  paymentSteps,
   resolvePageFromHash,
+  serviceCategories,
   socialProof,
   testimonials,
   websiteImage,
@@ -42,72 +51,100 @@ import {
 
 const heroCopy = {
   home: {
-    badge: 'Luxury fashion house',
-    title: 'A more modern atelier website with real depth, motion, and conversion paths.',
+    badge: 'Premium fashion hub',
+    title: 'A premium glassmorphism fashion website built for services, payments, and live operations.',
     description:
-      'Beccatee Atelier now reads like a complete fashion brand, not a single landing page. Explore the academy, bespoke services, journal, and studio contact flow from one polished experience.',
-    primaryLabel: 'Book a consultation',
-    primaryPage: 'contact',
-    secondaryLabel: 'View academy',
-    secondaryPage: 'academy',
+      'This experience now feels like a current luxury brand platform with strong conversion paths, multipage navigation, premium services, academy enrollment, and secure payment-ready flows.',
+    primaryLabel: 'Explore services',
+    primaryPage: 'services',
+    secondaryLabel: 'Make a payment',
+    secondaryPage: 'payments',
     image: websiteImage(
-      'luxury African fashion designer in elegant modern atelier with mannequin couture gown soft purple and amber lighting premium realistic hero image for website',
+      'luxury African fashion house interior with couture gowns, glass walls, ambient purple and amber lighting, premium modern website hero image',
+      'portrait_4_3'
+    ),
+  },
+  services: {
+    badge: 'High-value services',
+    title: 'Fashion services structured like a premium business, not a simple portfolio.',
+    description:
+      'The services layer now separates bridal, occasionwear, and business support so clients immediately understand value, process, and next steps.',
+    primaryLabel: 'Start a project',
+    primaryPage: 'contact',
+    secondaryLabel: 'Review payments',
+    secondaryPage: 'payments',
+    image: websiteImage(
+      'luxury fashion service presentation in premium studio with bridal gown, eveningwear, and consultation setup, realistic website image',
       'portrait_4_3'
     ),
   },
   academy: {
-    badge: 'Weekend academy',
-    title: 'Structured fashion training with a studio-grade learning journey.',
+    badge: 'Structured academy',
+    title: 'A training experience that looks organized, serious, and industry-ready.',
     description:
-      'The academy page focuses on curriculum clarity, outcomes, and confidence-building instruction for serious intermediate learners.',
-    primaryLabel: 'Apply for the cohort',
+      'The academy page now reads like a real program with timelines, outcomes, and guided progression instead of a few disconnected details.',
+    primaryLabel: 'Apply now',
     primaryPage: 'contact',
-    secondaryLabel: 'See the atelier',
-    secondaryPage: 'atelier',
+    secondaryLabel: 'Pay seat deposit',
+    secondaryPage: 'payments',
     image: websiteImage(
-      'fashion academy workshop in premium modern studio, mentor teaching garment construction to students, realistic editorial education website image',
+      'fashion design academy workshop in polished luxury studio with students and mentor, realistic editorial education website image',
       'portrait_4_3'
     ),
   },
   atelier: {
-    badge: 'Bespoke tailoring',
-    title: 'Premium bridal and occasionwear services with a clear booking path.',
+    badge: 'Couture atelier',
+    title: 'Premium couture production with clearer pricing anchors and delivery stages.',
     description:
-      'This view makes the studio feel high-value and trustworthy through service packages, process visibility, and proof of craftsmanship.',
-    primaryLabel: 'Start your project',
+      'This view makes the atelier feel expensive, organized, and trustworthy with stronger service cards, process mapping, and direct client conversion.',
+    primaryLabel: 'Book fitting',
     primaryPage: 'contact',
-    secondaryLabel: 'Read the journal',
-    secondaryPage: 'journal',
+    secondaryLabel: 'View services',
+    secondaryPage: 'services',
     image: websiteImage(
-      'couture bridal gown fitting in luxury African fashion atelier, seamstress adjusting elegant dress, modern realistic website photography',
+      'couture fitting in luxury African fashion atelier with designer adjusting bridal dress, premium realistic website image',
       'portrait_4_3'
     ),
   },
   journal: {
-    badge: 'Editorial stories',
-    title: 'A journal page that gives the brand personality, voice, and authority.',
+    badge: 'Editorial journal',
+    title: 'A modern journal that keeps the brand active, relevant, and premium.',
     description:
-      'Trend notes, behind-the-scenes stories, and studio reflections create a fuller brand presence and make the website feel alive.',
-    primaryLabel: 'Book a studio call',
-    primaryPage: 'contact',
-    secondaryLabel: 'Explore services',
-    secondaryPage: 'atelier',
+      'Fresh editorial storytelling strengthens brand voice, trust, and return visits while making the site feel alive instead of static.',
+    primaryLabel: 'Read services',
+    primaryPage: 'services',
+    secondaryLabel: 'Book consultation',
+    secondaryPage: 'contact',
     image: websiteImage(
-      'fashion editorial moodboard desk with sketches fabrics and styling notes in sleek contemporary studio, realistic premium website image',
+      'fashion editorial planning desk with swatches, sketchbook, styling notes and luxe ambient light, realistic premium website image',
+      'portrait_4_3'
+    ),
+  },
+  payments: {
+    badge: 'Secure checkout',
+    title: 'A guided payment page with Paystack-ready checkout and premium trust cues.',
+    description:
+      'Clients can now move from interest to action with plan selection, secure payment messaging, and real Paystack integration support.',
+    primaryLabel: 'Pay now',
+    primaryPage: 'payments',
+    secondaryLabel: 'Contact studio',
+    secondaryPage: 'contact',
+    image: websiteImage(
+      'luxury payment desk in fashion studio with tablet card and elegant packaging, premium glassmorphism modern website image',
       'portrait_4_3'
     ),
   },
   contact: {
     badge: 'Client intake',
-    title: 'Fast contact options, guided inquiry capture, and trust-building FAQs.',
+    title: 'Inquiry capture that feels complete, guided, and premium-standard.',
     description:
-      'This page brings the conversion pieces together with a stronger form, clearer service choices, contact channels, and appointment cues.',
-    primaryLabel: 'Back to home',
+      'The form area now works as a proper intake path for couture, academy, strategy, and post-payment follow-up requests.',
+    primaryLabel: 'Return home',
     primaryPage: 'home',
-    secondaryLabel: 'See academy info',
-    secondaryPage: 'academy',
+    secondaryLabel: 'See payments',
+    secondaryPage: 'payments',
     image: websiteImage(
-      'luxury consultation desk in fashion studio with phone tablet sketchbook and fabric swatches, purple ambient light, realistic website image',
+      'luxury consultation desk in premium fashion studio with tablet sketchbook fabric and soft ambient light, realistic website image',
       'portrait_4_3'
     ),
   },
@@ -117,21 +154,21 @@ const galleryShots = [
   {
     title: 'Reception couture',
     image: websiteImage(
-      'elegant reception dress on mannequin in luxury fashion studio, modern glass accents, realistic website portfolio image',
+      'elegant reception dress on mannequin in luxury fashion studio with glassmorphism accents, realistic website portfolio image',
       'square_hd'
     ),
   },
   {
     title: 'Studio detailing',
     image: websiteImage(
-      'close up couture beading and sewing details in premium fashion atelier, realistic website detail shot',
+      'close up couture beading and sewing details in premium fashion atelier, realistic luxury website detail shot',
       'square_hd'
     ),
   },
   {
-    title: 'Fabric selection',
+    title: 'Fabric curation',
     image: websiteImage(
-      'bridal fabric curation table in modern atelier with lace satin crystals and sketches, realistic premium website image',
+      'bridal fabric curation table in modern couture atelier with lace satin crystals and sketches, realistic premium website image',
       'square_hd'
     ),
   },
@@ -139,26 +176,26 @@ const galleryShots = [
 
 const academyBenefits = [
   'Industry-style weekend structure with mentor critique',
-  'Pattern work, finishing discipline, and presentation confidence',
-  'Portfolio-minded assignments and better client-readiness',
+  'Pattern confidence, finishing discipline, and better presentation quality',
+  'Portfolio-minded assignments and stronger client-readiness',
 ];
 
 const journalHighlights = [
-  'Weekly studio notes that keep the brand fresh and active',
-  'A better SEO surface than a static one-page website',
-  'Proof of taste, process, and creative point of view',
+  'Weekly content keeps the brand active and current',
+  'Editorial storytelling creates a better SEO surface',
+  'Voice, authority, and taste feel more believable to premium clients',
 ];
 
 function SectionHeading({ eyebrow, title, description, align = 'left' }) {
   return (
-    <div className={align === 'center' ? 'text-center max-w-3xl mx-auto' : 'max-w-2xl'}>
-      <p className="text-sm font-semibold uppercase tracking-[0.28em] text-amber-300/90 mb-4">
+    <div className={align === 'center' ? 'mx-auto max-w-3xl text-center' : 'max-w-2xl'}>
+      <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-amber-300/90">
         {eyebrow}
       </p>
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight">
+      <h2 className="text-3xl font-semibold leading-tight text-white md:text-4xl lg:text-5xl">
         {title}
       </h2>
-      <p className="mt-5 text-base md:text-lg leading-8 text-slate-300">{description}</p>
+      <p className="mt-5 text-base leading-8 text-slate-300 md:text-lg">{description}</p>
     </div>
   );
 }
@@ -180,13 +217,43 @@ function AppButton({ label, onClick, primary = false }) {
   );
 }
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, detail }) {
   return (
     <div className="glass-panel rounded-3xl p-5">
-      <p className="text-2xl md:text-3xl font-semibold text-white">{value}</p>
-      <p className="mt-2 text-sm text-slate-300">{label}</p>
+      <p className="text-2xl font-semibold text-white md:text-3xl">{value}</p>
+      <p className="mt-2 text-sm font-medium text-slate-200">{label}</p>
+      {detail && <p className="mt-2 text-sm leading-6 text-slate-400">{detail}</p>}
     </div>
   );
+}
+
+function loadPaystackScript() {
+  if (typeof window === 'undefined') {
+    return Promise.reject(new Error('Window is not available.'));
+  }
+
+  if (window.PaystackPop) {
+    return Promise.resolve(window.PaystackPop);
+  }
+
+  return new Promise((resolve, reject) => {
+    const existingScript = document.querySelector('script[data-paystack-script="true"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(window.PaystackPop), { once: true });
+      existingScript.addEventListener('error', () => reject(new Error('Paystack failed to load.')), {
+        once: true,
+      });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://js.paystack.co/v1/inline.js';
+    script.async = true;
+    script.dataset.paystackScript = 'true';
+    script.onload = () => resolve(window.PaystackPop);
+    script.onerror = () => reject(new Error('Paystack failed to load.'));
+    document.body.appendChild(script);
+  });
 }
 
 export default function App() {
@@ -196,6 +263,8 @@ export default function App() {
   const [activePage, setActivePage] = useState(getInitialPage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(paymentPlans[0].slug);
   const [activeMoment, setActiveMoment] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
@@ -204,6 +273,7 @@ export default function App() {
   const hero = heroCopy[activePage];
   const spotlight = featuredMoments[activeMoment];
   const currentTestimonial = testimonials[activeTestimonial];
+  const activePlan = paymentPlans.find((plan) => plan.slug === selectedPlan) ?? paymentPlans[0];
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -257,14 +327,92 @@ export default function App() {
     setTimeout(() => setFormStatus(null), 5000);
   };
 
+  const startPaystackCheckout = async ({ name, email, phone, plan }) => {
+    const runtimeConfig =
+      typeof window !== 'undefined' ? window.__FASHION_HUB_CONFIG__ ?? {} : {};
+    const paystackKey = runtimeConfig.paystackPublicKey || window.PAYSTACK_PUBLIC_KEY || '';
+    const callbackUrl =
+      runtimeConfig.paymentCallbackUrl ||
+      (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}#/payments` : '');
+
+    if (!paystackKey) {
+      setPaymentStatus({
+        type: 'error',
+        title: 'Paystack public key missing.',
+        message:
+          'Set window.__FASHION_HUB_CONFIG__.paystackPublicKey or window.PAYSTACK_PUBLIC_KEY before using live checkout.',
+      });
+      return;
+    }
+
+    try {
+      const PaystackPop = await loadPaystackScript();
+      const reference = createPaymentReference();
+      const checkout = buildPaystackInlineConfig({
+        key: paystackKey,
+        email,
+        amount: plan.amount,
+        planCode: plan.planCode,
+        callbackUrl,
+        reference,
+        metadata: {
+          customer_name: name,
+          customer_phone: phone,
+          plan_slug: plan.slug,
+          plan_title: plan.title,
+          source: 'fashion-hub-website',
+        },
+      });
+
+      const handler = PaystackPop.setup({
+        ...checkout,
+        firstname: name,
+        callback: () => {
+          setPaymentStatus({
+            type: 'success',
+            title: 'Payment started successfully.',
+            message: `Reference ${reference} has been captured. Verify it on /api/paystack/verify for a production flow.`,
+          });
+        },
+        onClose: () => {
+          setPaymentStatus({
+            type: 'info',
+            title: 'Checkout closed.',
+            message: 'You can continue later or contact the studio for assisted payment.',
+          });
+        },
+      });
+
+      handler.openIframe();
+    } catch (error) {
+      setPaymentStatus({
+        type: 'error',
+        title: 'Unable to start checkout.',
+        message: error instanceof Error ? error.message : 'Payment failed to start.',
+      });
+    }
+  };
+
+  const handlePaymentSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    await startPaystackCheckout({
+      name: String(formData.get('name') || '').trim(),
+      email: String(formData.get('email') || '').trim(),
+      phone: String(formData.get('phone') || '').trim(),
+      plan: activePlan,
+    });
+  };
+
   const renderHomePage = () => (
     <>
       <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 md:p-10">
           <SectionHeading
-            eyebrow="Flagship experience"
-            title="Built like a real fashion business website, not just a hero section."
-            description="The home page now combines studio positioning, social proof, spotlight content, and direct pathways into the academy, atelier, and journal."
+            eyebrow="Flagship platform"
+            title="Now positioned like a premium fashion business with real client pathways."
+            description="The home page now balances studio storytelling, operational proof, services, journal content, and secure payment routing from one polished experience."
           />
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {socialProof.map((item) => (
@@ -273,16 +421,10 @@ export default function App() {
           </div>
         </div>
 
-        <div className="glass-panel rounded-[2rem] p-6 floating-card">
-          <p className="text-sm uppercase tracking-[0.28em] text-amber-300/90">
-            Rotating spotlight
-          </p>
+        <div className="glass-panel floating-card rounded-[2rem] p-6">
+          <p className="text-sm uppercase tracking-[0.28em] text-amber-300/90">Rotating spotlight</p>
           <div className="mt-5 overflow-hidden rounded-[1.75rem] border border-white/10">
-            <img
-              src={spotlight.image}
-              alt={spotlight.title}
-              className="h-72 w-full object-cover"
-            />
+            <img src={spotlight.image} alt={spotlight.title} className="h-72 w-full object-cover" />
           </div>
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-amber-200">
             {spotlight.tag}
@@ -305,34 +447,67 @@ export default function App() {
         </div>
       </section>
 
-      <section className="mt-24 grid gap-6 lg:grid-cols-3">
+      <section className="mt-24">
+        <SectionHeading
+          eyebrow="Operations pulse"
+          title="Live-style operational cues make the studio feel active and current."
+          description="This layer gives the website stronger business credibility by showing active production, open seats, and fast response signals."
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-4">
+          {operationsMetrics.map((metric) => (
+            <StatCard
+              key={metric.label}
+              label={metric.label}
+              value={metric.value}
+              detail={metric.detail}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-24 grid gap-6 lg:grid-cols-4">
+        <div className="glass-panel rounded-[2rem] p-7">
+          <Briefcase className="h-9 w-9 text-amber-300" />
+          <h3 className="mt-6 text-2xl font-semibold text-white">Services</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            Bridal, couture, strategy, and premium service packaging with better conversion logic.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigateTo('services')}
+            className="mt-6 inline-flex items-center text-sm font-semibold text-amber-200"
+          >
+            Explore services
+            <ChevronRight className="ml-1 h-4 w-4" />
+          </button>
+        </div>
         <div className="glass-panel rounded-[2rem] p-7">
           <BookOpen className="h-9 w-9 text-amber-300" />
           <h3 className="mt-6 text-2xl font-semibold text-white">Academy</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            Clear learning tracks, a timeline, and professional outcomes for serious students.
+            Structured learning tracks, mentorship, and visible outcomes for serious students.
           </p>
           <button
             type="button"
             onClick={() => navigateTo('academy')}
             className="mt-6 inline-flex items-center text-sm font-semibold text-amber-200"
           >
-            Explore the academy
+            Explore academy
             <ChevronRight className="ml-1 h-4 w-4" />
           </button>
         </div>
         <div className="glass-panel rounded-[2rem] p-7">
-          <Shirt className="h-9 w-9 text-amber-300" />
-          <h3 className="mt-6 text-2xl font-semibold text-white">Atelier</h3>
+          <CreditCard className="h-9 w-9 text-amber-300" />
+          <h3 className="mt-6 text-2xl font-semibold text-white">Payments</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            Service cards, booking cues, and a visible couture process make the studio feel premium.
+            Guided checkout flows for deposits, consultations, and academy seat reservations.
           </p>
           <button
             type="button"
-            onClick={() => navigateTo('atelier')}
+            onClick={() => navigateTo('payments')}
             className="mt-6 inline-flex items-center text-sm font-semibold text-amber-200"
           >
-            View atelier services
+            Open payments
             <ChevronRight className="ml-1 h-4 w-4" />
           </button>
         </div>
@@ -340,25 +515,25 @@ export default function App() {
           <Newspaper className="h-9 w-9 text-amber-300" />
           <h3 className="mt-6 text-2xl font-semibold text-white">Journal</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            Editorial content gives the site personality, freshness, and stronger trust signals.
+            Editorial notes, studio stories, and launch-ready content to keep the brand fresh.
           </p>
           <button
             type="button"
             onClick={() => navigateTo('journal')}
             className="mt-6 inline-flex items-center text-sm font-semibold text-amber-200"
           >
-            Read the journal
+            Read journal
             <ChevronRight className="ml-1 h-4 w-4" />
           </button>
         </div>
       </section>
 
-      <section className="mt-24 grid gap-8 lg:grid-cols-[1fr_1.1fr] items-center">
+      <section className="mt-24 grid items-center gap-8 lg:grid-cols-[1fr_1.1fr]">
         <div>
           <SectionHeading
             eyebrow="Client proof"
             title="More believable, more premium, and easier to trust."
-            description="A good redesign does not only look current. It makes the service feel organized, high-value, and ready for real inquiries."
+            description="The redesign does more than look current. It makes the service feel organized, high-value, and ready for real inquiries and payments."
           />
           <div className="glass-panel mt-8 rounded-[2rem] p-7">
             <div className="flex items-center gap-3 text-amber-300">
@@ -391,6 +566,87 @@ export default function App() {
     </>
   );
 
+  const renderServicesPage = () => (
+    <>
+      <section className="grid gap-6 lg:grid-cols-3">
+        {serviceCategories.map((service) => (
+          <div key={service.title} className="glass-panel rounded-[2rem] p-7">
+            <div className="inline-flex rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs uppercase tracking-[0.24em] text-amber-200">
+              {service.highlight}
+            </div>
+            <h3 className="mt-6 text-2xl font-semibold text-white">{service.title}</h3>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{service.summary}</p>
+            <div className="mt-6 space-y-3">
+              {service.bullets.map((bullet) => (
+                <div key={bullet} className="flex items-start gap-3 text-sm leading-7 text-slate-200">
+                  <CheckCircle2 className="mt-1 h-4 w-4 text-amber-300" />
+                  <span>{bullet}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section className="mt-24 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="glass-panel rounded-[2rem] p-8">
+          <SectionHeading
+            eyebrow="Why this works"
+            title="Clear service packaging lifts trust and conversion quality."
+            description="Premium clients buy clarity. This page now communicates what the studio offers, how each lane works, and where to go next."
+          />
+          <div className="mt-8 space-y-4">
+            {operationsMetrics.slice(0, 3).map((item) => (
+              <div key={item.label} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-sm font-medium text-white">{item.label}</p>
+                  <span className="text-lg font-semibold text-amber-200">{item.value}</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/10 bg-slate-950/65 p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-amber-300/90">
+            Conversion channels
+          </p>
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <div className="glass-panel rounded-[1.5rem] p-5">
+              <Shirt className="h-7 w-7 text-amber-300" />
+              <h3 className="mt-4 text-xl font-semibold text-white">Custom projects</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                Bridal and couture clients can move from browsing to inquiry in one guided path.
+              </p>
+            </div>
+            <div className="glass-panel rounded-[1.5rem] p-5">
+              <Wallet className="h-7 w-7 text-amber-300" />
+              <h3 className="mt-4 text-xl font-semibold text-white">Secure deposits</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                Payment routing is now visible instead of hidden inside conversations.
+              </p>
+            </div>
+            <div className="glass-panel rounded-[1.5rem] p-5">
+              <Activity className="h-7 w-7 text-amber-300" />
+              <h3 className="mt-4 text-xl font-semibold text-white">Live operations</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                Real-time style business cues make the studio feel active, not dormant.
+              </p>
+            </div>
+            <div className="glass-panel rounded-[1.5rem] p-5">
+              <ShieldCheck className="h-7 w-7 text-amber-300" />
+              <h3 className="mt-4 text-xl font-semibold text-white">Premium trust</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                Better information architecture reduces hesitation before clients reach out.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+
   const renderAcademyPage = () => (
     <>
       <section className="grid gap-6 lg:grid-cols-3">
@@ -413,12 +669,12 @@ export default function App() {
         ))}
       </section>
 
-      <section className="mt-24 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] items-start">
+      <section className="mt-24 grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="glass-panel rounded-[2rem] p-8">
           <SectionHeading
             eyebrow="Student outcomes"
-            title="A clearer curriculum makes the offer feel serious."
-            description="Instead of a simple list of topics, the academy now explains how students move from fundamentals to polished final looks."
+            title="A clearer curriculum makes the academy offer feel serious."
+            description="Instead of a loose topic list, the academy now explains how students move from foundations to polished final looks."
           />
           <div className="mt-8 space-y-4">
             {academyBenefits.map((benefit) => (
@@ -466,12 +722,12 @@ export default function App() {
         ))}
       </section>
 
-      <section className="mt-24 grid gap-8 lg:grid-cols-[1fr_1fr] items-center">
+      <section className="mt-24 grid items-center gap-8 lg:grid-cols-[1fr_1fr]">
         <div className="rounded-[2rem] border border-white/10 bg-slate-950/65 p-8">
           <SectionHeading
             eyebrow="How projects move"
             title="A visible process makes premium pricing feel justified."
-            description="The atelier page now explains how discovery, fabric curation, fittings, and delivery work."
+            description="The atelier page now explains how discovery, fabric curation, fittings, and delivery work from start to finish."
           />
           <div className="mt-8 space-y-4">
             {atelierProcess.map((item) => (
@@ -527,7 +783,7 @@ export default function App() {
         ))}
       </section>
 
-      <section className="mt-24 grid gap-8 lg:grid-cols-[1fr_1fr] items-start">
+      <section className="mt-24 grid items-start gap-8 lg:grid-cols-[1fr_1fr]">
         <div className="glass-panel rounded-[2rem] p-8">
           <SectionHeading
             eyebrow="Why this matters"
@@ -571,9 +827,152 @@ export default function App() {
     </>
   );
 
+  const renderPaymentsPage = () => (
+    <>
+      <section className="grid gap-6 lg:grid-cols-3">
+        {paymentPlans.map((plan) => {
+          const isSelected = plan.slug === selectedPlan;
+          return (
+            <button
+              key={plan.slug}
+              type="button"
+              onClick={() => setSelectedPlan(plan.slug)}
+              className={`glass-panel rounded-[2rem] p-7 text-left transition duration-300 hover:-translate-y-0.5 ${
+                isSelected ? 'ring-2 ring-amber-300/70' : ''
+              }`}
+            >
+              <p className="text-xs uppercase tracking-[0.28em] text-amber-200">{plan.subtitle}</p>
+              <h3 className="mt-4 text-2xl font-semibold text-white">{plan.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-300">{plan.description}</p>
+              <p className="mt-6 text-lg font-semibold text-white">{plan.amountLabel}</p>
+            </button>
+          );
+        })}
+      </section>
+
+      <section className="mt-24 grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="space-y-5">
+          <div className="glass-panel rounded-[2rem] p-8">
+            <SectionHeading
+              eyebrow="Paystack workflow"
+              title="A real payment path with secure production architecture."
+              description="The frontend uses Paystack inline checkout with a public key, while server-side verification is prepared under /api/paystack for a proper production flow."
+            />
+            <div className="mt-8 space-y-4">
+              {paymentSteps.map((item) => (
+                <div key={item.step} className="glass-panel rounded-[1.5rem] p-5">
+                  <p className="text-xs uppercase tracking-[0.28em] text-amber-200">{item.step}</p>
+                  <h3 className="mt-2 text-lg font-semibold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">{item.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="glass-panel rounded-[2rem] p-6">
+            <div className="flex items-start gap-3">
+              <ShieldCheck className="mt-0.5 h-5 w-5 text-emerald-300" />
+              <div>
+                <p className="font-semibold text-white">Production note</p>
+                <p className="mt-2 text-sm leading-7 text-slate-300">
+                  Keep `PAYSTACK_SECRET_KEY` on the server only. Set the browser public key through `window.__FASHION_HUB_CONFIG__` or a runtime env injection.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/10 bg-white/95 p-8 text-slate-950 shadow-2xl shadow-fuchsia-950/20">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-fuchsia-700">Selected payment</p>
+              <h3 className="mt-3 text-3xl font-semibold">{activePlan.title}</h3>
+            </div>
+            <div className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">
+              {activePlan.amountLabel}
+            </div>
+          </div>
+
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            Complete this form to launch Paystack checkout for the selected payment lane.
+          </p>
+
+          {paymentStatus && (
+            <div
+              className={`mt-6 rounded-[1.5rem] border p-4 ${
+                paymentStatus.type === 'success'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                  : paymentStatus.type === 'error'
+                    ? 'border-rose-200 bg-rose-50 text-rose-700'
+                    : 'border-amber-200 bg-amber-50 text-amber-700'
+              }`}
+            >
+              <p className="font-semibold">{paymentStatus.title}</p>
+              <p className="mt-1 text-sm">{paymentStatus.message}</p>
+            </div>
+          )}
+
+          <form onSubmit={handlePaymentSubmit} className="mt-8 grid gap-5 md:grid-cols-2">
+            <div className="md:col-span-1">
+              <label className="mb-2 block text-sm font-medium text-slate-700">Full name</label>
+              <input
+                required
+                name="name"
+                type="text"
+                placeholder="Jane Doe"
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 outline-none transition focus:border-fuchsia-500"
+              />
+            </div>
+            <div className="md:col-span-1">
+              <label className="mb-2 block text-sm font-medium text-slate-700">Phone number</label>
+              <input
+                required
+                name="phone"
+                type="tel"
+                placeholder="+234 XXX XXX XXXX"
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 outline-none transition focus:border-fuchsia-500"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">Email address</label>
+              <input
+                required
+                name="email"
+                type="email"
+                placeholder="jane@example.com"
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 outline-none transition focus:border-fuchsia-500"
+              />
+            </div>
+            <div className="md:col-span-2 rounded-[1.5rem] bg-slate-100 p-5">
+              <div className="flex items-center gap-3">
+                <CreditCard className="h-5 w-5 text-slate-950" />
+                <div>
+                  <p className="font-semibold text-slate-950">{activePlan.title}</p>
+                  <p className="text-sm text-slate-600">{activePlan.description}</p>
+                </div>
+              </div>
+            </div>
+            <div className="md:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3 text-sm text-slate-600">
+                <ShieldCheck className="h-4 w-4" />
+                <span>Card, bank transfer, USSD, and supported channels via Paystack.</span>
+              </div>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                Launch checkout
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </>
+  );
+
   const renderContactPage = () => (
     <>
-      <section className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] items-start">
+      <section className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr]">
         <div className="space-y-5">
           {contactChannels.map((channel) => (
             <div key={channel.label} className="glass-panel rounded-[1.75rem] p-6">
@@ -584,7 +983,7 @@ export default function App() {
           <div className="glass-panel rounded-[1.75rem] p-6">
             <p className="text-xs uppercase tracking-[0.28em] text-amber-200">Fast path</p>
             <p className="mt-3 text-sm leading-7 text-slate-300">
-              Use the form for academy applications, couture inquiries, or consultation requests. The layout is more complete and feels like a real intake step.
+              Use the form for academy applications, couture inquiries, consultation requests, or post-payment follow-up.
             </p>
           </div>
         </div>
@@ -592,7 +991,7 @@ export default function App() {
         <div className="rounded-[2rem] border border-white/10 bg-white/95 p-8 text-slate-950 shadow-2xl shadow-fuchsia-950/20">
           <h3 className="text-3xl font-semibold">Start your inquiry</h3>
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Share your interest, timeline, and contact details. The visual upgrade now supports a clearer conversion flow.
+            Share your interest, timeline, and contact details. This intake flow now supports stronger premium conversion.
           </p>
 
           {formStatus && (
@@ -645,13 +1044,14 @@ export default function App() {
               <select
                 required
                 name="interest"
-                defaultValue={activePage === 'contact' ? 'Bespoke tailoring' : pageMeta.title}
+                defaultValue="Bespoke tailoring"
                 className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 outline-none transition focus:border-fuchsia-500"
               >
                 <option>Academy application</option>
                 <option>Bespoke tailoring</option>
                 <option>Bridal project</option>
                 <option>Private consultation</option>
+                <option>Payment follow-up</option>
               </select>
             </div>
             <div className="md:col-span-2">
@@ -659,7 +1059,7 @@ export default function App() {
               <textarea
                 name="message"
                 rows={5}
-                placeholder="Tell us about your event, timeline, or learning goal."
+                placeholder="Tell us about your event, timeline, learning goal, or payment reference."
                 className="w-full rounded-[1.5rem] border border-slate-200 bg-white px-4 py-4 outline-none transition focus:border-fuchsia-500"
               />
             </div>
@@ -714,12 +1114,16 @@ export default function App() {
 
   const renderPageBody = () => {
     switch (activePage) {
+      case 'services':
+        return renderServicesPage();
       case 'academy':
         return renderAcademyPage();
       case 'atelier':
         return renderAtelierPage();
       case 'journal':
         return renderJournalPage();
+      case 'payments':
+        return renderPaymentsPage();
       case 'contact':
         return renderContactPage();
       default:
@@ -728,7 +1132,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen page-shell font-sans text-white">
+    <div className="page-shell min-h-screen font-sans text-white">
       <style>{`
         :root {
           color-scheme: dark;
@@ -740,7 +1144,7 @@ export default function App() {
         }
 
         @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0.18); }
+          0%, 100% { box-shadow: 0 0 0 rgba(251, 191, 36, 0.12); }
           50% { box-shadow: 0 0 36px rgba(251, 191, 36, 0.18); }
         }
 
@@ -756,16 +1160,18 @@ export default function App() {
 
         .page-shell {
           background:
-            radial-gradient(circle at top left, rgba(168, 85, 247, 0.22), transparent 32%),
-            radial-gradient(circle at top right, rgba(244, 114, 182, 0.18), transparent 28%),
-            linear-gradient(180deg, #070b17 0%, #0f172a 42%, #111827 100%);
+            radial-gradient(circle at top left, rgba(168, 85, 247, 0.24), transparent 28%),
+            radial-gradient(circle at top right, rgba(244, 114, 182, 0.18), transparent 22%),
+            radial-gradient(circle at bottom center, rgba(56, 189, 248, 0.12), transparent 28%),
+            linear-gradient(180deg, #050816 0%, #0b1220 42%, #101827 100%);
         }
 
         .glass-panel {
-          background: rgba(255, 255, 255, 0.07);
-          backdrop-filter: blur(22px);
-          -webkit-backdrop-filter: blur(22px);
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.05));
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
           border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
         }
 
         .ambient-orb {
@@ -791,23 +1197,36 @@ export default function App() {
         <div className="ambient-orb absolute bottom-10 left-1/3 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
       </div>
 
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <div className="border-b border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 text-sm text-slate-300">
+          <div className="flex items-center gap-2">
+            <Activity className="h-4 w-4 text-amber-300" />
+            <span>Premium fashion hub with services, payments, and studio operations.</span>
+          </div>
           <button
             type="button"
-            onClick={() => navigateTo('home')}
-            className="flex items-center gap-3"
+            onClick={() => navigateTo('payments')}
+            className="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15"
           >
+            <CreditCard className="mr-2 h-4 w-4 text-amber-300" />
+            Pay securely
+          </button>
+        </div>
+      </div>
+
+      <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <button type="button" onClick={() => navigateTo('home')} className="flex items-center gap-3">
             <div className="glow-shell flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-lg font-semibold text-white">
               BA
             </div>
             <div className="text-left">
               <p className="text-sm uppercase tracking-[0.28em] text-slate-300">Beccatee</p>
-              <p className="text-base font-semibold text-white">Atelier House</p>
+              <p className="text-base font-semibold text-white">Fashion Hub</p>
             </div>
           </button>
 
-          <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 p-2 lg:flex">
+          <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 p-2 xl:flex">
             {pages.map((page) => {
               const active = page.slug === activePage;
               return (
@@ -838,24 +1257,24 @@ export default function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateTo('atelier')}
+              onClick={() => navigateTo('payments')}
               className="rounded-full bg-amber-300 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
             >
-              Book fitting
+              Pay now
             </button>
           </div>
 
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen((open) => !open)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white xl:hidden"
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
         {isMobileMenuOpen && (
-          <div className="border-t border-white/10 bg-slate-950/90 px-4 py-4 backdrop-blur-xl lg:hidden">
+          <div className="border-t border-white/10 bg-slate-950/90 px-4 py-4 backdrop-blur-xl xl:hidden">
             <div className="space-y-2">
               {pages.map((page) => (
                 <a
@@ -866,9 +1285,7 @@ export default function App() {
                     navigateTo(page.slug);
                   }}
                   className={`block rounded-2xl px-4 py-3 text-sm ${
-                    page.slug === activePage
-                      ? 'bg-white text-slate-950'
-                      : 'bg-white/5 text-slate-200'
+                    page.slug === activePage ? 'bg-white text-slate-950' : 'bg-white/5 text-slate-200'
                   }`}
                 >
                   {page.label}
@@ -905,11 +1322,11 @@ export default function App() {
               </div>
               <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
                 <PlayCircle className="h-4 w-4 text-amber-300" />
-                <span>Animated premium layout</span>
+                <span>Premium glassmorphism UI</span>
               </div>
               <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
                 <MessageCircle className="h-4 w-4 text-amber-300" />
-                <span>Real inquiry pathways</span>
+                <span>Inquiry and payment routing</span>
               </div>
             </div>
           </div>
@@ -953,28 +1370,24 @@ export default function App() {
       </main>
 
       <footer className="border-t border-white/10 bg-slate-950/60 px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Beccatee Atelier</p>
+            <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Beccatee Fashion Hub</p>
             <p className="mt-3 max-w-xl text-sm leading-7 text-slate-400">
-              Modernized into a fuller multi-page brand experience with stronger visual hierarchy, glassmorphism, and believable conversion design.
+              Rebuilt into a richer multipage experience with premium glassmorphism, service packaging, real inquiry pathways, and Paystack-ready payments.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={() => navigateTo('home')}
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
-            >
-              Home
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo('contact')}
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
-            >
-              Contact
-            </button>
+            {pages.map((page) => (
+              <button
+                key={page.slug}
+                type="button"
+                onClick={() => navigateTo(page.slug)}
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
+              >
+                {page.label}
+              </button>
+            ))}
             <a
               href="mailto:beccatee.atelier@gmail.com"
               className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
